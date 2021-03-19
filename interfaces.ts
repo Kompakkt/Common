@@ -231,7 +231,7 @@ export interface IMetaDataContactReference extends IDocument {
  * Value is whatever data is connected to the entity described by key
  */
 export interface IRelatedMap<T> {
-  [relatedEntityId: string]: T;
+  [relatedEntityId: string]: T | undefined;
 }
 
 export interface IMetaDataPerson extends IDocument {
