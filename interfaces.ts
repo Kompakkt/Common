@@ -460,6 +460,7 @@ export interface IEntity extends IWhitelist, IAnnotationList, IDocument {
   name: string;
 
   files: IFile[];
+  externalFile?: string;
 
   relatedDigitalEntity: IDocument | IMetaDataDigitalEntity;
 
