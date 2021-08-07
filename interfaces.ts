@@ -170,6 +170,31 @@ export const isInstitution = (obj: any): obj is IMetaDataInstitution => {
   return inst?.name !== undefined && inst?.addresses !== undefined;
 };
 
+/**
+ * TypeGuard: Checks whether an object is an address
+ * @type {Boolean}
+ */
+export const isAddress = (obj: any): obj is IMetaDataAddress => {
+  const addr = obj as IMetaDataAddress;
+  return (
+    addr?.building !== undefined &&
+    addr?.city !== undefined &&
+    addr?.country !== undefined &&
+    addr?.number !== undefined &&
+    addr?.postcode !== undefined &&
+    addr?.street !== undefined
+  );
+};
+
+/**
+ * TypeGuard: Checks whether an object is a contact reference
+ * @type {Boolean}
+ */
+export const isContact = (obj: any): obj is IMetaDataContactReference => {
+  const con = obj as IMetaDataContactReference;
+  return con?.mail !== undefined && con?.note !== undefined && con?.phonenumber !== undefined;
+};
+
 // Interfaces
 // Metadata related
 export interface IDocument {
