@@ -11,13 +11,17 @@ export enum EUserRank {
 }
 
 export enum Collection {
-  Person = 'person',
-  Institution = 'institution',
-  DigitalEntity = 'digitalentity',
-  Tag = 'tag',
-  Entity = 'entity',
-  Compilation = 'compilation',
-  Group = 'group',
+  address = 'address',
+  annotation = 'annotation',
+  compilation = 'compilation',
+  contact = 'contact',
+  digitalentity = 'digitalentity',
+  entity = 'entity',
+  group = 'group',
+  institution = 'institution',
+  person = 'person',
+  physicalentity = 'physicalentity',
+  tag = 'tag',
 }
 
 export enum Command {
@@ -347,7 +351,7 @@ export interface IUserData extends IDocument {
   role: EUserRank;
 
   data: {
-    [key: string]: Array<string | null | any | ObjectId>;
+    [key in Collection]: Array<string | null | any | ObjectId>;
   };
 }
 
