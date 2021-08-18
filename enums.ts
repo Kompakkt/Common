@@ -36,26 +36,3 @@ export enum Collection {
   tag = 'tag',
 }
 
-// TODO: check if this can be deprecated
-export enum Command {
-  locateReference,
-  pushEntry,
-}
-
-// TODO: check if this can be deprecated
-export enum License {
-  BY,
-  BYSA,
-  BYNC,
-  BYNCSA,
-  BYND,
-  BYNCND,
-}
-
-// TODO: check if this can be deprecated
-export enum Role {
-  RIGHTSOWNER,
-  CREATOR,
-  EDITOR,
-  DATA_CREATOR,
-}

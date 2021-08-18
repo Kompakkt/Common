@@ -16,7 +16,6 @@ export {
   IPhysicalEntity,
   IDigitalEntity,
   IStrippedUserData,
-  ILoginData,
   IUserData,
   IGroup,
   IAnnotation,
@@ -46,7 +45,7 @@ export {
   ISizedEvent,
 } from './interfaces';
 
-export { UserRank, Collection, Command, License, Role } from './enums';
+export { UserRank, Collection } from './enums';
 
 export {
   isUnresolved,

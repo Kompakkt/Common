@@ -15,7 +15,6 @@ import {
 
 const isDefined = (value: any) => value != null && value != undefined;
 
-// TODO: allow dot notation
 const checkProps = (props: string[], obj: any) => {
   if (!isDefined(obj)) return false;
   let valid = true;

@@ -172,18 +172,6 @@ export interface IStrippedUserData extends IDocument {
   username: string;
 }
 
-// TODO: deprecate by only asking for password.
-// take username from current logged in user. Don't cache
-/**
- * Logindata cached in memory, for confirmation on actions of concern.
- * @deprecated
- */
-export interface ILoginData {
-  username: string;
-  password: string;
-  isCached: boolean;
-}
-
 /**
  * Database model for users. Should not be displayed in public,
  * as it contains the sessionID.
