@@ -1,206 +1,13 @@
+// Expose MongoDB ObjectId to be used in Repo and Viewer
 import { ObjectId } from 'bson';
-
 export { ObjectId };
 
-// Enums
-export enum EUserRank {
-  user = 'user',
-  uploadrequested = 'uploadrequested',
-  uploader = 'uploader',
-  admin = 'admin',
-}
-
-export enum Collection {
-  address = 'address',
-  annotation = 'annotation',
-  compilation = 'compilation',
-  contact = 'contact',
-  digitalentity = 'digitalentity',
-  entity = 'entity',
-  group = 'group',
-  institution = 'institution',
-  person = 'person',
-  physicalentity = 'physicalentity',
-  tag = 'tag',
-}
-
-export enum Command {
-  locateReference,
-  pushEntry,
-}
-
-export enum License {
-  BY,
-  BYSA,
-  BYNC,
-  BYNCSA,
-  BYND,
-  BYNCND,
-}
-
-export enum Role {
-  RIGHTSOWNER,
-  CREATOR,
-  EDITOR,
-  DATA_CREATOR,
-}
-
-// Typeguards
-/**
- * TypeGuard: Checks whether an <IEntity | IDocument> is fully resolved
- * @type {Boolean}
- */
-export const isResolved = (obj: any): obj is IEntity => {
-  return obj?.relatedDigitalEntity?.description !== undefined;
-};
+import { Collection, UserRank } from './enums';
 
 /**
- * TypeGuard: Checks whether a document received from the backend is still unresolved
- * @type {Boolean}
+ * Database model for any document saved in the database.
+ * Should be used as a base interface for other database models.
  */
-export const isUnresolved = (obj: any): obj is IDocument => {
-  return Object.keys(obj).length === 1 && obj._id !== undefined;
-};
-
-/**
- * TypeGuard: Checks whether an object is a group entry
- * @type {Boolean}
- */
-export const isGroup = (obj: any): obj is IGroup => {
-  return (
-    obj?.name !== undefined &&
-    obj?.creator !== undefined &&
-    obj?.owners !== undefined &&
-    obj?.members !== undefined
-  );
-};
-
-/**
- * TypeGuard: Checks whether an object is a tag entry
- * @type {Boolean}
- */
-export const isTag = (obj: any): obj is IMetaDataTag => {
-  return obj && obj.value !== undefined;
-};
-
-/**
- * TypeGuard: Checks whether an object is a digital/physical entity
- * @type {Boolean}
- */
-export const isMetadataEntity = (
-  obj: any,
-): obj is IMetaDataDigitalEntity | IMetaDataPhysicalEntity => {
-  return (
-    obj?.title !== undefined &&
-    obj?.description !== undefined &&
-    obj?.persons !== undefined &&
-    obj?.institutions !== undefined
-  );
-};
-
-/**
- * TypeGuard: Checks whether an object is a compilation
- * @type {Boolean}
- */
-export const isCompilation = (obj: any): obj is ICompilation => {
-  const compilation = obj as ICompilation;
-  return (
-    compilation?.entities !== undefined &&
-    compilation?.name !== undefined &&
-    compilation?.description !== undefined
-  );
-};
-
-/**
- * TypeGuard: Checks whether an object is an entity
- * @type {Boolean}
- */
-export const isEntity = (obj: any): obj is IEntity => {
-  const entity = obj as IEntity;
-  return (
-    entity?.name !== undefined &&
-    entity?.mediaType !== undefined &&
-    entity?.online !== undefined &&
-    entity?.finished !== undefined
-  );
-};
-
-/**
- * TypeGuard: Checks whether an object is an annotation
- * @type {Boolean}
- */
-export const isAnnotation = (obj: any): obj is IAnnotation => {
-  const annotation = obj as IAnnotation;
-  return annotation?.body !== undefined && annotation?.target !== undefined;
-};
-
-/**
- * TypeGuard: Checks whether an object is a digital entity
- * @type {Boolean}
- */
-export const isDigitalEntity = (obj: any): obj is IMetaDataDigitalEntity => {
-  const digentity = obj as IMetaDataDigitalEntity;
-  return (
-    isMetadataEntity(digentity) && digentity?.type !== undefined && digentity?.licence !== undefined
-  );
-};
-
-/**
- * TypeGuard: Checks whether an object is a physical entity
- * @type {Boolean}
- */
-export const isPhysicalEntity = (obj: any): obj is IMetaDataPhysicalEntity => {
-  const phyent = obj as IMetaDataPhysicalEntity;
-  return (
-    isMetadataEntity(phyent) && phyent?.place !== undefined && phyent?.collection !== undefined
-  );
-};
-
-/**
- * TypeGuard: Checks whether an object is a person
- * @type {Boolean}
- */
-export const isPerson = (obj: any): obj is IMetaDataPerson => {
-  const person = obj as IMetaDataPerson;
-  return person?.prename !== undefined && person?.name !== undefined;
-};
-
-/**
- * TypeGuard: Checks whether an object is an institution
- * @type {Boolean}
- */
-export const isInstitution = (obj: any): obj is IMetaDataInstitution => {
-  const inst = obj as IMetaDataInstitution;
-  return inst?.name !== undefined && inst?.addresses !== undefined;
-};
-
-/**
- * TypeGuard: Checks whether an object is an address
- * @type {Boolean}
- */
-export const isAddress = (obj: any): obj is IMetaDataAddress => {
-  const addr = obj as IMetaDataAddress;
-  return (
-    addr?.building !== undefined &&
-    addr?.city !== undefined &&
-    addr?.country !== undefined &&
-    addr?.number !== undefined &&
-    addr?.postcode !== undefined &&
-    addr?.street !== undefined
-  );
-};
-
-/**
- * TypeGuard: Checks whether an object is a contact reference
- * @type {Boolean}
- */
-export const isContact = (obj: any): obj is IMetaDataContactReference => {
-  const con = obj as IMetaDataContactReference;
-  return con?.mail !== undefined && con?.note !== undefined && con?.phonenumber !== undefined;
-};
-
-// Interfaces
-// Metadata related
 export interface IDocument {
   _id: string | ObjectId;
 }
@@ -231,10 +38,13 @@ export interface IDescriptionValueTuple {
 export interface IPlaceTuple {
   name: string;
   geopolarea: string;
-  address: IMetaDataAddress;
+  address: IAddress;
 }
 
-export interface IMetaDataAddress extends IDocument {
+/**
+ * Database model for addresses.
+ */
+export interface IAddress extends IDocument {
   building: string;
   number: string;
   street: string;
@@ -246,7 +56,10 @@ export interface IMetaDataAddress extends IDocument {
   creation_date: number;
 }
 
-export interface IMetaDataContactReference extends IDocument {
+/**
+ * Database model for contact references.
+ */
+export interface IContact extends IDocument {
   mail: string;
   phonenumber: string;
   note: string;
@@ -256,14 +69,19 @@ export interface IMetaDataContactReference extends IDocument {
 }
 
 /**
- * Key is always the _id of an entity
+ * Generic object-based pseudo-map (not to be confused with Map).
+ * Key is always the _id of a metadata entity (DigitalEntity | PhysicalEntity)
  * Value is whatever data is connected to the entity described by key
  */
 export interface IRelatedMap<T> {
   [relatedEntityId: string]: T | undefined;
 }
 
-export interface IMetaDataPerson extends IDocument {
+/**
+ * Database model of a person. Makes use of IRelatedMap for roles,
+ * institutions and contact references.
+ */
+export interface IPerson extends IDocument {
   prename: string;
   name: string;
 
@@ -271,11 +89,15 @@ export interface IMetaDataPerson extends IDocument {
   // of the digital or physical entity
   // a person refers to
   roles: IRelatedMap<string[]>;
-  institutions: IRelatedMap<Array<IMetaDataInstitution | IDocument>>;
-  contact_references: IRelatedMap<IMetaDataContactReference | IDocument>;
+  institutions: IRelatedMap<Array<IInstitution | IDocument>>;
+  contact_references: IRelatedMap<IContact | IDocument>;
 }
 
-export interface IMetaDataInstitution extends IDocument {
+/**
+ * Database model of an institution. Makes use of IRelatedMap for roles,
+ * notes and addresses.
+ */
+export interface IInstitution extends IDocument {
   name: string;
   university: string;
 
@@ -284,14 +106,21 @@ export interface IMetaDataInstitution extends IDocument {
   // a person refers to
   roles: IRelatedMap<string[]>;
   notes: IRelatedMap<string>;
-  addresses: IRelatedMap<IMetaDataAddress | IDocument>;
+  addresses: IRelatedMap<IAddress | IDocument>;
 }
 
-export interface IMetaDataTag extends IDocument {
+/**
+ * Database model of a tag
+ */
+export interface ITag extends IDocument {
   value: string;
 }
 
-export interface IMetaDataBaseEntity extends IDocument {
+/**
+ * Common interface between IPhysicalEntity and IDigitalEntity.
+ * Should not be used on its own.
+ */
+export interface IBaseEntity extends IDocument {
   title: string;
   description: string;
 
@@ -300,23 +129,29 @@ export interface IMetaDataBaseEntity extends IDocument {
   biblioRefs: IDescriptionValueTuple[];
   other: IDescriptionValueTuple[];
 
-  persons: IMetaDataPerson[];
-  institutions: IMetaDataInstitution[];
+  persons: IPerson[];
+  institutions: IInstitution[];
 
   metadata_files: IFile[];
 }
 
-export interface IMetaDataPhysicalEntity extends IMetaDataBaseEntity {
+/**
+ * Database model of a physical entity. Uses IBaseEntity.
+ */
+export interface IPhysicalEntity extends IBaseEntity {
   place: IPlaceTuple;
   collection: string;
 }
 
-export interface IMetaDataDigitalEntity extends IMetaDataBaseEntity {
+/**
+ * Database model of a digital entity. Uses IBaseEntity.
+ */
+export interface IDigitalEntity extends IBaseEntity {
   type: string;
   licence: string;
 
   discipline: string[];
-  tags: IMetaDataTag[];
+  tags: ITag[];
 
   dimensions: IDimensionTuple[];
   creation: ICreationTuple[];
@@ -325,21 +160,34 @@ export interface IMetaDataDigitalEntity extends IMetaDataBaseEntity {
   statement: string;
   objecttype: string;
 
-  phyObjs: IMetaDataPhysicalEntity[];
+  phyObjs: IPhysicalEntity[];
 }
 
-// User related
+/**
+ * Userdata reduced to fullname, username and _id.
+ * May be displayed in public
+ */
 export interface IStrippedUserData extends IDocument {
   fullname: string;
   username: string;
 }
 
+// TODO: deprecate by only asking for password.
+// take username from current logged in user. Don't cache
+/**
+ * Logindata cached in memory, for confirmation on actions of concern.
+ * @deprecated
+ */
 export interface ILoginData {
   username: string;
   password: string;
   isCached: boolean;
 }
 
+/**
+ * Database model for users. Should not be displayed in public,
+ * as it contains the sessionID.
+ */
 export interface IUserData extends IDocument {
   username: string;
   sessionID: string;
@@ -348,13 +196,17 @@ export interface IUserData extends IDocument {
   surname: string;
   mail: string;
 
-  role: EUserRank;
+  role: UserRank;
 
   data: {
     [key in Collection]: Array<string | null | any | ObjectId>;
   };
 }
 
+/**
+ * Database model for groups. May be displayed in public,
+ * as it only contains stripped user data.
+ */
 export interface IGroup extends IDocument {
   name: string;
   creator: IStrippedUserData;
@@ -362,7 +214,9 @@ export interface IGroup extends IDocument {
   members: IStrippedUserData[];
 }
 
-// Annotation related
+/**
+ * Database model of an annotation.
+ */
 export interface IAnnotation extends IDocument {
   validated: boolean;
 
@@ -402,12 +256,12 @@ export interface IContent {
 
 export interface ICameraPerspective {
   cameraType: string;
-  position: IVector;
-  target: IVector;
+  position: IVector3;
+  target: IVector3;
   preview: string;
 }
 
-export interface IVector {
+export interface IVector3 {
   x: number;
   y: number;
   z: number;
@@ -425,11 +279,12 @@ export interface ISource {
 }
 
 export interface ISelector {
-  referencePoint: IVector;
-  referenceNormal: IVector;
+  referencePoint: IVector3;
+  referenceNormal: IVector3;
 }
 
 // Entity related
+// TODO: remove file_ prefix and add migration
 export interface IFile {
   file_name: string;
   file_link: string;
@@ -437,6 +292,11 @@ export interface IFile {
   file_format: string;
 }
 
+/**
+ * Describes any database model that can be protected by a whitelist of users
+ * or groups.
+ * Should not be used on its own.
+ */
 export interface IWhitelist {
   whitelist: {
     enabled: boolean;
@@ -479,21 +339,34 @@ export interface IEntityLight {
   intensity: number;
 }
 
+/**
+ * Describes any database model that can be annotated/receive annotations.
+ * Should not be used on its own.
+ */
 interface IAnnotationList {
   annotations: {
     [id: string]: IAnnotation | IDocument;
   };
 }
 
+/**
+ * Database model of an entity.
+ *
+ * An entity is what a user creates during the upload process and contains
+ * information about the files uploaded as well as a reference to the
+ * digital entity described/connected to the uploaded entity.
+ *
+ * Makes use of IWhitelist and IAnnotationList.
+ */
 export interface IEntity extends IWhitelist, IAnnotationList, IDocument {
   name: string;
 
   files: IFile[];
   externalFile?: string;
 
-  relatedDigitalEntity: IDocument | IMetaDataDigitalEntity;
+  relatedDigitalEntity: IDocument | IDigitalEntity;
 
-  creator?: ICreator;
+  creator: IStrippedUserData;
 
   online: boolean;
   finished: boolean;
@@ -515,15 +388,18 @@ export interface IEntity extends IWhitelist, IAnnotationList, IDocument {
   settings: IEntitySettings;
 }
 
-export interface ICreator extends IDocument {
-  username: string;
-  fullname: string;
-}
-
+/**
+ * Database model of a compilation.
+ *
+ * A compilation contains a list of entities aswell as information on
+ * who created the compilation.
+ *
+ * Makes use of IWhitelist and IAnnotationList.
+ */
 export interface ICompilation extends IWhitelist, IAnnotationList, IDocument {
   name: string;
   description: string;
-  creator?: ICreator;
+  creator: IStrippedUserData;
   password?: string | boolean;
   entities: {
     [id: string]: IEntity | IDocument;
@@ -574,13 +450,3 @@ export interface ISizedEvent {
   width: number;
   height: number;
 }
-
-export type IAddress = IMetaDataAddress;
-export type IContactReference = IMetaDataContactReference;
-export type IContact = IMetaDataContactReference;
-export type IPerson = IMetaDataPerson;
-export type IInstitution = IMetaDataInstitution;
-export type ITag = IMetaDataTag;
-export type IBaseEntity = IMetaDataBaseEntity;
-export type IPhysicalEntity = IMetaDataPhysicalEntity;
-export type IDigitalEntity = IMetaDataDigitalEntity;
