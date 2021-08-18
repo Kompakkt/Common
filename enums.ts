@@ -35,4 +35,3 @@ export enum Collection {
   physicalentity = 'physicalentity',
   tag = 'tag',
 }
-

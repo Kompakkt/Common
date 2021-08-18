@@ -74,8 +74,8 @@ const ENTITY_PROPS = ['name', 'mediaType', 'online', 'finished'];
  * Checks whether an <IEntity | IDocument> is fully resolved
  * @type {Boolean}
  */
-const isResolvedEntity = (obj: any): obj is IEntity =>
-  obj?.relatedDigitalEntity?.description !== undefined;
+const isResolvedEntity = (obj: any): obj is IEntity & { relatedDigitalEntity: IDigitalEntity } =>
+  isEntity(obj) && isDigitalEntity(obj.relatedDigitalEntity);
 
 /**
  * Checks whether an object is an annotation
