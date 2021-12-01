@@ -35,13 +35,6 @@ export {
   IEntityLight,
   IEntity,
   ICompilation,
-  ISocketAnnotation,
-  ISocketMessage,
-  ISocketUser,
-  ISocketUserInfo,
-  ISocketChangeRoom,
-  ISocketChangeRanking,
-  ISocketRoomData,
   ISizedEvent,
 } from './interfaces';
 

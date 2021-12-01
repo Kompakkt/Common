@@ -394,46 +394,6 @@ export interface ICompilation extends IWhitelist, IAnnotationList, IDocument {
   };
 }
 
-// Socket related
-export interface ISocketAnnotation {
-  annotation: any;
-  user: ISocketUser;
-}
-
-export interface ISocketMessage {
-  message: string;
-  user: ISocketUser;
-}
-
-export interface ISocketUser extends IDocument {
-  socketId: string;
-  username: string;
-  fullname: string;
-  room: string;
-}
-
-export interface ISocketUserInfo {
-  user: ISocketUser;
-  annotations: any[];
-}
-
-export interface ISocketChangeRoom {
-  newRoom: string;
-  annotations: any[];
-}
-
-export interface ISocketChangeRanking {
-  user: ISocketUser;
-  oldRanking: any[];
-  newRanking: any[];
-}
-
-export interface ISocketRoomData {
-  requester: ISocketUserInfo;
-  recipient: string;
-  info: ISocketUserInfo;
-}
-
 export interface ISizedEvent {
   width: number;
   height: number;
