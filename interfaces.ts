@@ -218,6 +218,9 @@ export interface IAnnotation extends IDocument {
   lastModificationDate?: string;
   lastModifiedBy: IAgent;
 
+  positionXOnView?: number;
+  positionYOnView?: number;
+
   body: IBody;
   target: ITarget;
 }
@@ -307,6 +310,7 @@ export interface IPosition {
 }
 
 export interface IEntitySettings {
+  position?: IPosition
   preview: string;
   cameraPositionInitial: {
     position: IPosition;
@@ -319,6 +323,7 @@ export interface IEntitySettings {
   lights: IEntityLight[];
   rotation: IPosition;
   scale: number;
+  translate?: IPosition;
 }
 
 export interface IEntityLight {
