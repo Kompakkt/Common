@@ -1,5 +1,5 @@
 // Expose MongoDB ObjectId to be used in Repo and Viewer
-import { ObjectId } from 'bson';
+import ObjectId from 'bson-objectid';
 export { ObjectId };
 
 import { Collection, UserRank } from './enums';
