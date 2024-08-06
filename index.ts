@@ -1,5 +1,7 @@
-export {
-  ObjectId,
+import ObjectId from 'bson-objectid';
+export { ObjectId };
+
+export type {
   IDocument,
   ITypeValueTuple,
   IDimensionTuple,

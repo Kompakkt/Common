@@ -1,50 +1,49 @@
 // Expose MongoDB ObjectId to be used in Repo and Viewer
-import ObjectId from 'bson-objectid';
-export { ObjectId };
+import type ObjectId from 'bson-objectid';
 
 import { Collection, UserRank } from './enums';
 
 /**
  * Database model for any document saved in the database.
- * Should be used as a base interface for other database models.
+ * Should be used as a base type for other database models.
  */
-export interface IDocument {
+export type IDocument = {
   _id: string | ObjectId;
-}
+};
 
-export interface ITypeValueTuple {
+export type ITypeValueTuple = {
   type: string;
   value: string;
-}
+};
 
-export interface IDimensionTuple {
+export type IDimensionTuple = {
   type: string;
   value: string;
   name: string;
-}
+};
 
-export interface ICreationTuple {
+export type ICreationTuple = {
   technique: string;
   program: string;
   equipment: string;
   date: string;
-}
+};
 
-export interface IDescriptionValueTuple {
+export type IDescriptionValueTuple = {
   description: string;
   value: string;
-}
+};
 
-export interface IPlaceTuple {
+export type IPlaceTuple = {
   name: string;
   geopolarea: string;
   address: IAddress;
-}
+};
 
 /**
  * Database model for addresses.
  */
-export interface IAddress extends IDocument {
+export type IAddress = IDocument & {
   building: string;
   number: string;
   street: string;
@@ -54,34 +53,34 @@ export interface IAddress extends IDocument {
 
   // Internal & only used to sort addresses
   creation_date: number;
-}
+};
 
 /**
  * Database model for contact references.
  */
-export interface IContact extends IDocument {
+export type IContact = IDocument & {
   mail: string;
   phonenumber: string;
   note: string;
 
   // Internal & only used to sort contact references
   creation_date: number;
-}
+};
 
 /**
  * Generic object-based pseudo-map (not to be confused with Map).
  * Key is always the _id of a metadata entity (DigitalEntity | PhysicalEntity)
  * Value is whatever data is connected to the entity described by key
  */
-export interface IRelatedMap<T> {
+export type IRelatedMap<T> = {
   [relatedEntityId: string]: T | undefined;
-}
+};
 
 /**
  * Database model of a person. Makes use of IRelatedMap for roles,
  * institutions and contact references.
  */
-export interface IPerson extends IDocument {
+export type IPerson = IDocument & {
   prename: string;
   name: string;
 
@@ -91,13 +90,13 @@ export interface IPerson extends IDocument {
   roles: IRelatedMap<string[]>;
   institutions: IRelatedMap<Array<IInstitution | IDocument>>;
   contact_references: IRelatedMap<IContact | IDocument>;
-}
+};
 
 /**
  * Database model of an institution. Makes use of IRelatedMap for roles,
  * notes and addresses.
  */
-export interface IInstitution extends IDocument {
+export type IInstitution = IDocument & {
   name: string;
   university: string;
 
@@ -107,20 +106,20 @@ export interface IInstitution extends IDocument {
   roles: IRelatedMap<string[]>;
   notes: IRelatedMap<string>;
   addresses: IRelatedMap<IAddress | IDocument>;
-}
+};
 
 /**
  * Database model of a tag
  */
-export interface ITag extends IDocument {
+export type ITag = IDocument & {
   value: string;
-}
+};
 
 /**
- * Common interface between IPhysicalEntity and IDigitalEntity.
+ * Common type between IPhysicalEntity and IDigitalEntity.
  * Should not be used on its own.
  */
-export interface IBaseEntity extends IDocument {
+export type IBaseEntity = IDocument & {
   title: string;
   description: string;
 
@@ -133,20 +132,20 @@ export interface IBaseEntity extends IDocument {
   institutions: IInstitution[];
 
   metadata_files: IFile[];
-}
+};
 
 /**
  * Database model of a physical entity. Uses IBaseEntity.
  */
-export interface IPhysicalEntity extends IBaseEntity {
+export type IPhysicalEntity = IBaseEntity & {
   place: IPlaceTuple;
   collection: string;
-}
+};
 
 /**
  * Database model of a digital entity. Uses IBaseEntity.
  */
-export interface IDigitalEntity extends IBaseEntity {
+export type IDigitalEntity = IBaseEntity & {
   type: string;
   licence: string;
 
@@ -161,22 +160,22 @@ export interface IDigitalEntity extends IBaseEntity {
   objecttype: string;
 
   phyObjs: IPhysicalEntity[];
-}
+};
 
 /**
  * Userdata reduced to fullname, username and _id.
  * May be displayed in public
  */
-export interface IStrippedUserData extends IDocument {
+export type IStrippedUserData = IDocument & {
   fullname: string;
   username: string;
-}
+};
 
 /**
  * Database model for users. Should not be displayed in public,
  * as it contains the sessionID.
  */
-export interface IUserData extends IDocument {
+export type IUserData = IDocument & {
   username: string;
   sessionID: string;
   fullname: string;
@@ -189,23 +188,23 @@ export interface IUserData extends IDocument {
   data: {
     [key in Collection]: Array<string | null | any | ObjectId>;
   };
-}
+};
 
 /**
  * Database model for groups. May be displayed in public,
  * as it only contains stripped user data.
  */
-export interface IGroup extends IDocument {
+export type IGroup = IDocument & {
   name: string;
   creator: IStrippedUserData;
   owners: IStrippedUserData[];
   members: IStrippedUserData[];
-}
+};
 
 /**
  * Database model of an annotation.
  */
-export interface IAnnotation extends IDocument {
+export type IAnnotation = IDocument & {
   validated: boolean;
 
   identifier: string;
@@ -223,94 +222,94 @@ export interface IAnnotation extends IDocument {
 
   body: IBody;
   target: ITarget;
-}
+};
 
-export interface IAgent extends IDocument {
+export type IAgent = IDocument & {
   type: string;
   name: string;
   homepage?: string;
-}
+};
 
-export interface IBody {
+export type IBody = {
   type: string;
   content: IContent;
-}
+};
 
-export interface IContent {
+export type IContent = {
   type: string;
   title: string;
   description: string;
   link?: string;
   relatedPerspective: ICameraPerspective;
   [key: string]: any;
-}
+};
 
-export interface ICameraPerspective {
+export type ICameraPerspective = {
   cameraType: string;
   position: IVector3;
   target: IVector3;
   preview: string;
-}
+};
 
-export interface IVector3 {
+export type IVector3 = {
   x: number;
   y: number;
   z: number;
-}
+};
 
-export interface ITarget {
+export type ITarget = {
   source: ISource;
   selector: ISelector;
-}
+};
 
-export interface ISource {
+export type ISource = {
   link?: string;
   relatedEntity: string;
   relatedCompilation?: string;
-}
+};
 
-export interface ISelector {
+export type ISelector = {
   referencePoint: IVector3;
   referenceNormal: IVector3;
-}
+};
 
 // Entity related
 // TODO: remove file_ prefix and add migration
-export interface IFile {
+export type IFile = {
   file_name: string;
   file_link: string;
   file_size: number;
   file_format: string;
-}
+};
 
 /**
  * Describes any database model that can be protected by a whitelist of users
  * or groups.
  * Should not be used on its own.
  */
-export interface IWhitelist {
+export type IWhitelist = {
   whitelist: {
     enabled: boolean;
     persons: IStrippedUserData[];
     groups: IGroup[];
   };
-}
+};
 
-export interface IColor {
+export type IColor = {
   r: number;
   b: number;
   g: number;
   a: number;
-}
+};
 
-export interface IPosition {
+export type IPosition = {
   x: number;
   y: number;
   z: number;
-}
+};
 
-export interface IEntitySettings {
-  position?: IPosition
+export type IEntitySettings = {
+  position?: IPosition;
   preview: string;
   cameraPositionInitial: {
     position: IPosition;
@@ -324,23 +323,23 @@ export interface IEntitySettings {
   rotation: IPosition;
   scale: number;
   translate?: IPosition;
-}
+};
 
-export interface IEntityLight {
+export type IEntityLight = {
   type: string;
   position: IPosition;
   intensity: number;
-}
+};
 
 /**
  * Describes any database model that can be annotated/receive annotations.
  * Should not be used on its own.
  */
-interface IAnnotationList {
+type IAnnotationList = {
   annotations: {
     [id: string]: IAnnotation | IDocument;
   };
-}
+};
 
 /**
  * Database model of an entity.
@@ -351,35 +350,37 @@ interface IAnnotationList {
  *
  * Makes use of IWhitelist and IAnnotationList.
  */
-export interface IEntity extends IWhitelist, IAnnotationList, IDocument {
-  name: string;
+export type IEntity = IWhitelist &
+  IAnnotationList &
+  IDocument & {
+    name: string;
 
-  files: IFile[];
-  externalFile?: string;
+    files: IFile[];
+    externalFile?: string;
 
-  relatedDigitalEntity: IDocument | IDigitalEntity;
+    relatedDigitalEntity: IDocument | IDigitalEntity;
 
-  creator: IStrippedUserData;
+    creator: IStrippedUserData;
 
-  online: boolean;
-  finished: boolean;
+    online: boolean;
+    finished: boolean;
 
-  mediaType: string;
+    mediaType: string;
 
-  dataSource: {
-    isExternal: boolean;
-    service: string;
+    dataSource: {
+      isExternal: boolean;
+      service: string;
+    };
+
+    processed: {
+      low: string;
+      medium: string;
+      high: string;
+      raw: string;
+    };
+
+    settings: IEntitySettings;
   };
-
-  processed: {
-    low: string;
-    medium: string;
-    high: string;
-    raw: string;
-  };
-
-  settings: IEntitySettings;
-}
 
 /**
  * Database model of a compilation.
@@ -389,17 +390,19 @@ export interface IEntity extends IWhitelist, IAnnotationList, IDocument {
  *
  * Makes use of IWhitelist and IAnnotationList.
  */
-export interface ICompilation extends IWhitelist, IAnnotationList, IDocument {
-  name: string;
-  description: string;
-  creator: IStrippedUserData;
-  password?: string | boolean;
-  entities: {
-    [id: string]: IEntity | IDocument;
+export type ICompilation = IWhitelist &
+  IAnnotationList &
+  IDocument & {
+    name: string;
+    description: string;
+    creator: IStrippedUserData;
+    password?: string | boolean;
+    entities: {
+      [id: string]: IEntity | IDocument;
+    };
   };
-}
 
-export interface ISizedEvent {
+export type ISizedEvent = {
   width: number;
   height: number;
-}
+};
