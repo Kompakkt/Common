@@ -1,5 +1,4 @@
-export {
-  ObjectId,
+export type {
   IDocument,
   ITypeValueTuple,
   IDimensionTuple,
@@ -55,4 +54,5 @@ export {
   isInstitution,
   isAddress,
   isContact,
+  hasExtensions,
 } from './typeguards';

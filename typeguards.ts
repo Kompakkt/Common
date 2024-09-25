@@ -1,4 +1,4 @@
-import {
+import type {
   IEntity,
   IAddress,
   IDocument,
@@ -11,15 +11,18 @@ import {
   IPerson,
   IInstitution,
   IContact,
+  IEntitySettings,
 } from './interfaces';
 
 const isDefined = (value: any) => value != null && value != undefined;
 
-const checkProps = (props: string[], obj: any) => {
+const checkProps = (props: string[], obj: unknown) => {
+  if (typeof obj !== 'object' || obj === null) return false;
   if (!isDefined(obj)) return false;
+  if (Array.isArray(obj)) return false;
   let valid = true;
   for (const prop of props) {
-    if (!isDefined(obj[prop])) {
+    if (!Object.hasOwn(obj, prop) || !isDefined((obj as Record<string, unknown>)[prop])) {
       valid = false;
       break;
     }
@@ -33,6 +36,17 @@ const checkProps = (props: string[], obj: any) => {
  */
 const isUnresolved = (obj: any): obj is IDocument =>
   Object.keys(obj).length === 1 && obj._id !== undefined;
+
+
+/**
+ * Checks whether an object has extensions
+ * @param obj 
+ * @returns 
+ */
+const hasExtensions = (obj: any): obj is { extensions: Record<string, unknown> } => {
+  if (!isDefined(obj)) return false;
+  return checkProps(['extensions'], obj);
+}
 
 /**
  * Checks whether an object is a group entry
@@ -69,6 +83,12 @@ const COMP_PROPS = ['entities', 'name', 'description'];
  */
 const isEntity = (obj: any): obj is IEntity => checkProps(ENTITY_PROPS, obj);
 const ENTITY_PROPS = ['name', 'mediaType', 'online', 'finished'];
+
+/**
+ * 
+ */
+const isEntitySettings = (obj: any): obj is IEntitySettings => checkProps(ENTITY_SETTINGS_PROPS, obj);
+const ENTITY_SETTINGS_PROPS = ['preview', 'cameraPositionInitial', 'background', 'lights'];
 
 /**
  * Checks whether an <IEntity | IDocument> is fully resolved
@@ -129,12 +149,14 @@ const isContact = (obj: any): obj is IContact => checkProps(CONTACT_PROPS, obj);
 const CONTACT_PROPS = ['mail', 'note', 'phonenumber'];
 
 export {
+  hasExtensions,
   isUnresolved,
   isGroup,
   isTag,
   isMetadataEntity,
   isCompilation,
   isEntity,
+  isEntitySettings,
   isResolvedEntity,
   isAnnotation,
   isDigitalEntity,

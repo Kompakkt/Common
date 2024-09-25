@@ -1,7 +1,3 @@
-// Expose MongoDB ObjectId to be used in Repo and Viewer
-import ObjectId from 'bson-objectid';
-export { ObjectId };
-
 import { Collection, UserRank } from './enums';
 
 /**
@@ -9,7 +5,7 @@ import { Collection, UserRank } from './enums';
  * Should be used as a base interface for other database models.
  */
 export interface IDocument {
-  _id: string | ObjectId;
+  _id: string;
 }
 
 export interface ITypeValueTuple {
@@ -120,7 +116,7 @@ export interface ITag extends IDocument {
  * Common interface between IPhysicalEntity and IDigitalEntity.
  * Should not be used on its own.
  */
-export interface IBaseEntity extends IDocument {
+export interface IBaseEntity<T = Record<string, unknown>> extends IDocument {
   title: string;
   description: string;
 
@@ -129,16 +125,18 @@ export interface IBaseEntity extends IDocument {
   biblioRefs: IDescriptionValueTuple[];
   other: IDescriptionValueTuple[];
 
-  persons: IPerson[];
-  institutions: IInstitution[];
+  persons: (IPerson | IDocument | string)[];
+  institutions: (IInstitution | IDocument | string)[];
 
   metadata_files: IFile[];
+
+  extensions?: T;
 }
 
 /**
  * Database model of a physical entity. Uses IBaseEntity.
  */
-export interface IPhysicalEntity extends IBaseEntity {
+export interface IPhysicalEntity<T = Record<string, unknown>> extends IBaseEntity<T> {
   place: IPlaceTuple;
   collection: string;
 }
@@ -146,12 +144,12 @@ export interface IPhysicalEntity extends IBaseEntity {
 /**
  * Database model of a digital entity. Uses IBaseEntity.
  */
-export interface IDigitalEntity extends IBaseEntity {
+export interface IDigitalEntity<T = Record<string, unknown>> extends IBaseEntity<T> {
   type: string;
   licence: string;
 
   discipline: string[];
-  tags: ITag[];
+  tags: (ITag | IDocument)[];
 
   dimensions: IDimensionTuple[];
   creation: ICreationTuple[];
@@ -160,7 +158,7 @@ export interface IDigitalEntity extends IBaseEntity {
   statement: string;
   objecttype: string;
 
-  phyObjs: IPhysicalEntity[];
+  phyObjs: (IPhysicalEntity<T> | IDocument)[];
 }
 
 /**
@@ -178,16 +176,25 @@ export interface IStrippedUserData extends IDocument {
  */
 export interface IUserData extends IDocument {
   username: string;
-  sessionID: string;
+  sessionID?: string;
   fullname: string;
   prename: string;
   surname: string;
   mail: string;
-
   role: UserRank;
 
   data: {
-    [key in Collection]: Array<string | null | any | ObjectId>;
+    [Collection.address]?: Array<IAddress | IDocument | string | null>;
+    [Collection.annotation]?: Array<IAnnotation | IDocument | string | null>;
+    [Collection.compilation]?: Array<ICompilation | IDocument | string | null>;
+    [Collection.contact]?: Array<IContact | IDocument | string | null>;
+    [Collection.digitalentity]?: Array<IDigitalEntity | IDocument | string | null>;
+    [Collection.entity]?: Array<IDocument | string | null>;
+    [Collection.group]?: Array<IGroup | IDocument | string | null>;
+    [Collection.institution]?: Array<IInstitution | IDocument | string | null>;
+    [Collection.person]?: Array<IPerson | IDocument | string | null>;
+    [Collection.physicalentity]?: Array<IPhysicalEntity | IDocument | string | null>;
+    [Collection.tag]?: Array<ITag | IDocument | string | null>;
   };
 }
 
@@ -205,7 +212,7 @@ export interface IGroup extends IDocument {
 /**
  * Database model of an annotation.
  */
-export interface IAnnotation extends IDocument {
+export interface IAnnotation<T = Record<string, unknown>> extends IDocument {
   validated: boolean;
 
   identifier: string;
@@ -223,6 +230,8 @@ export interface IAnnotation extends IDocument {
 
   body: IBody;
   target: ITarget;
+
+  extensions?: T;
 }
 
 export interface IAgent extends IDocument {
@@ -351,7 +360,7 @@ interface IAnnotationList {
  *
  * Makes use of IWhitelist and IAnnotationList.
  */
-export interface IEntity extends IWhitelist, IAnnotationList, IDocument {
+export interface IEntity<T = Record<string, unknown>> extends IWhitelist, IAnnotationList, IDocument {
   name: string;
 
   files: IFile[];
@@ -379,6 +388,8 @@ export interface IEntity extends IWhitelist, IAnnotationList, IDocument {
   };
 
   settings: IEntitySettings;
+
+  extensions?: T;
 }
 
 /**
