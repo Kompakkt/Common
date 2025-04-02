@@ -319,7 +319,7 @@ export interface IPosition {
 }
 
 export interface IEntitySettings {
-  position?: IPosition
+  position?: IPosition;
   preview: string;
   cameraPositionInitial: {
     position: IPosition;
@@ -390,6 +390,10 @@ export interface IEntity<T = Record<string, unknown>> extends IWhitelist, IAnnot
   settings: IEntitySettings;
 
   extensions?: T;
+
+  access?: {
+    [id: string]: IStrippedUserData & { role: 'owner' | 'editor' | 'viewer' };
+  };
 }
 
 /**
