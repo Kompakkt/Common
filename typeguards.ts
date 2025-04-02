@@ -31,22 +31,35 @@ const checkProps = (props: string[], obj: unknown) => {
 };
 
 /**
+ * Checks whether a from the server returned document is equal to another.
+ * While strings might be equal, they are not documents.
+ * @param a - The first document to compare.
+ * @param b - The second document to compare.
+ * @returns True if the documents are equal and are documents, false otherwise.
+ */
+export const areDocumentsEqual = (a: string | IDocument | null, b: string | IDocument | null) => {
+  if (typeof a === 'string' || typeof b === 'string') return false;
+  if (a === null || b === null) return false;
+  if (a._id !== b._id) return false;
+  return true;
+};
+
+/**
  * Checks whether a document received from the backend is still unresolved
  * @type {Boolean}
  */
 const isUnresolved = (obj: any): obj is IDocument =>
   Object.keys(obj).length === 1 && obj._id !== undefined;
 
-
 /**
  * Checks whether an object has extensions
- * @param obj 
- * @returns 
+ * @param obj
+ * @returns
  */
 const hasExtensions = (obj: any): obj is { extensions: Record<string, unknown> } => {
   if (!isDefined(obj)) return false;
   return checkProps(['extensions'], obj);
-}
+};
 
 /**
  * Checks whether an object is a group entry
@@ -85,9 +98,10 @@ const isEntity = (obj: any): obj is IEntity => checkProps(ENTITY_PROPS, obj);
 const ENTITY_PROPS = ['name', 'mediaType', 'online', 'finished'];
 
 /**
- * 
+ *
  */
-const isEntitySettings = (obj: any): obj is IEntitySettings => checkProps(ENTITY_SETTINGS_PROPS, obj);
+const isEntitySettings = (obj: any): obj is IEntitySettings =>
+  checkProps(ENTITY_SETTINGS_PROPS, obj);
 const ENTITY_SETTINGS_PROPS = ['preview', 'cameraPositionInitial', 'background', 'lights'];
 
 /**

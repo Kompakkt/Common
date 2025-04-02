@@ -55,4 +55,5 @@ export {
   isAddress,
   isContact,
   hasExtensions,
+  areDocumentsEqual,
 } from './typeguards';
