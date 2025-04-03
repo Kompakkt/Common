@@ -1,17 +1,17 @@
 import type {
-  IEntity,
   IAddress,
-  IDocument,
-  IGroup,
-  ITag,
-  IDigitalEntity,
-  IPhysicalEntity,
-  ICompilation,
   IAnnotation,
-  IPerson,
-  IInstitution,
+  ICompilation,
   IContact,
+  IDigitalEntity,
+  IDocument,
+  IEntity,
   IEntitySettings,
+  IGroup,
+  IInstitution,
+  IPerson,
+  IPhysicalEntity,
+  ITag,
 } from './interfaces';
 
 const isDefined = (value: any) => value != null && value != undefined;
@@ -37,7 +37,7 @@ const checkProps = (props: string[], obj: unknown) => {
  * @param b - The second document to compare.
  * @returns True if the documents are equal and are documents, false otherwise.
  */
-export const areDocumentsEqual = (a: string | IDocument | null, b: string | IDocument | null) => {
+const areDocumentsEqual = (a: string | IDocument | null, b: string | IDocument | null) => {
   if (typeof a === 'string' || typeof b === 'string') return false;
   if (a === null || b === null) return false;
   if (a._id !== b._id) return false;
@@ -50,6 +50,9 @@ export const areDocumentsEqual = (a: string | IDocument | null, b: string | IDoc
  */
 const isUnresolved = (obj: any): obj is IDocument =>
   Object.keys(obj).length === 1 && obj._id !== undefined;
+
+const isDocument = (obj: any): obj is IDocument =>
+  typeof obj === 'object' && obj !== null && obj._id !== undefined;
 
 /**
  * Checks whether an object has extensions
@@ -163,20 +166,22 @@ const isContact = (obj: any): obj is IContact => checkProps(CONTACT_PROPS, obj);
 const CONTACT_PROPS = ['mail', 'note', 'phonenumber'];
 
 export {
+  areDocumentsEqual,
   hasExtensions,
-  isUnresolved,
-  isGroup,
-  isTag,
-  isMetadataEntity,
+  isAddress,
+  isAnnotation,
   isCompilation,
+  isContact,
+  isDigitalEntity,
+  isDocument,
   isEntity,
   isEntitySettings,
-  isResolvedEntity,
-  isAnnotation,
-  isDigitalEntity,
-  isPhysicalEntity,
-  isPerson,
+  isGroup,
   isInstitution,
-  isAddress,
-  isContact,
+  isMetadataEntity,
+  isPerson,
+  isPhysicalEntity,
+  isResolvedEntity,
+  isTag,
+  isUnresolved,
 };
