@@ -39,6 +39,8 @@ export type {
 
 export { Collection, UserRank } from './enums';
 
+export { asVector3 } from './helpers';
+
 export {
   areDocumentsEqual,
   hasExtensions,
