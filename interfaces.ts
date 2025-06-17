@@ -1,4 +1,4 @@
-import { Collection, UserRank } from './enums';
+import { Collection, type UserRank } from './enums';
 
 /**
  * Database model for any document saved in the database.
@@ -256,10 +256,12 @@ export interface IContent {
 
 export interface ICameraPerspective {
   cameraType: string;
-  position: IVector3;
-  target: IVector3;
+  position: IAmbiguousVector3;
+  target: IAmbiguousVector3;
   preview: string;
 }
+
+export type IAmbiguousVector3 = IVector3 | { _x: number; _y: number; _z: number };
 
 export interface IVector3 {
   x: number;
@@ -279,8 +281,8 @@ export interface ISource {
 }
 
 export interface ISelector {
-  referencePoint: IVector3;
-  referenceNormal: IVector3;
+  referencePoint: IAmbiguousVector3;
+  referenceNormal: IAmbiguousVector3;
 }
 
 // Entity related
@@ -360,7 +362,10 @@ interface IAnnotationList {
  *
  * Makes use of IWhitelist and IAnnotationList.
  */
-export interface IEntity<T = Record<string, unknown>> extends IWhitelist, IAnnotationList, IDocument {
+export interface IEntity<T = Record<string, unknown>>
+  extends IWhitelist,
+    IAnnotationList,
+    IDocument {
   name: string;
 
   files: IFile[];

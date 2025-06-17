@@ -1,6 +1,7 @@
 export type {
   IAddress,
   IAgent,
+  IAmbiguousVector3,
   IAnnotation,
   IBaseEntity,
   IBody,
@@ -39,8 +40,6 @@ export type {
 
 export { Collection, UserRank } from './enums';
 
-export { asVector3 } from './helpers';
-
 export {
   areDocumentsEqual,
   hasExtensions,
@@ -60,3 +59,5 @@ export {
   isTag,
   isUnresolved,
 } from './typeguards';
+
+export { asVector3 } from './helper';
