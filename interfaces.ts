@@ -170,6 +170,30 @@ export interface IStrippedUserData extends IDocument {
   username: string;
 }
 
+export type UserDataCollectionDocumentType<C extends Collection> = C extends Collection.address
+  ? IAddress
+  : C extends Collection.annotation
+    ? IAnnotation
+    : C extends Collection.compilation
+      ? ICompilation
+      : C extends Collection.contact
+        ? IContact
+        : C extends Collection.digitalentity
+          ? IDigitalEntity
+          : C extends Collection.entity
+            ? IEntity
+            : C extends Collection.group
+              ? IGroup
+              : C extends Collection.institution
+                ? IInstitution
+                : C extends Collection.person
+                  ? IPerson
+                  : C extends Collection.physicalentity
+                    ? IPhysicalEntity
+                    : C extends Collection.tag
+                      ? ITag
+                      : IDocument;
+
 /**
  * Database model for users. Should not be displayed in public,
  * as it contains the sessionID.
@@ -197,6 +221,8 @@ export interface IUserData extends IDocument {
     [Collection.tag]?: Array<ITag | IDocument | string | null>;
   };
 }
+
+export type IUserDataWithoutData = Omit<IUserData, 'data'>;
 
 /**
  * Database model for groups. May be displayed in public,
