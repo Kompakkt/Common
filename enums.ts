@@ -35,3 +35,14 @@ export enum Collection {
   physicalentity = 'physicalentity',
   tag = 'tag',
 }
+
+export enum EntityAccessRole {
+  owner = 'owner',
+  editor = 'editor',
+  viewer = 'viewer',
+}
+
+export enum ProfileType {
+  user = 'user',
+  institution = 'institution',
+}

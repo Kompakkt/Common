@@ -11,6 +11,7 @@ import type {
   IInstitution,
   IPerson,
   IPhysicalEntity,
+  IPublicProfile,
   ITag,
 } from './interfaces';
 
@@ -165,6 +166,21 @@ const ADDR_PROPS = ['building', 'city', 'country', 'number', 'postcode', 'street
 const isContact = (obj: any): obj is IContact => checkProps(CONTACT_PROPS, obj);
 const CONTACT_PROPS = ['mail', 'note', 'phonenumber'];
 
+const isPublicProfile = (obj: unknown): obj is IPublicProfile => {
+  if (!obj || obj === null) return false;
+  if (typeof obj !== 'object') return false;
+  if (Array.isArray(obj)) return false;
+  const profile = obj as Record<string, unknown>;
+  return (
+    'imageUrl' in profile &&
+    'description' in profile &&
+    'displayName' in profile &&
+    'location' in profile &&
+    'socials' in profile &&
+    'website' in (profile['socials'] as Record<string, unknown>)
+  );
+};
+
 export {
   areDocumentsEqual,
   hasExtensions,
@@ -184,4 +200,5 @@ export {
   isResolvedEntity,
   isTag,
   isUnresolved,
+  isPublicProfile,
 };

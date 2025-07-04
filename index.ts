@@ -36,9 +36,10 @@ export type {
   IUserData,
   IVector3,
   IWhitelist,
+  IPublicProfile,
 } from './interfaces';
 
-export { Collection, UserRank } from './enums';
+export { Collection, UserRank, EntityAccessRole, ProfileType } from './enums';
 
 export {
   areDocumentsEqual,
@@ -58,6 +59,7 @@ export {
   isResolvedEntity,
   isTag,
   isUnresolved,
+  isPublicProfile,
 } from './typeguards';
 
 export { asVector3 } from './helper';

@@ -1,4 +1,4 @@
-import { Collection, type UserRank } from './enums';
+import { Collection, EntityAccessRole, ProfileType, type UserRank } from './enums';
 
 /**
  * Database model for any document saved in the database.
@@ -69,15 +69,15 @@ export interface IContact extends IDocument {
  * Key is always the _id of a metadata entity (DigitalEntity | PhysicalEntity)
  * Value is whatever data is connected to the entity described by key
  */
-export interface IRelatedMap<T> {
-  [relatedEntityId: string]: T | undefined;
+export interface IRelatedMap<T, TNonNullable extends boolean = true> {
+  [relatedEntityId: string]: TNonNullable extends true ? T : T | undefined;
 }
 
 /**
  * Database model of a person. Makes use of IRelatedMap for roles,
  * institutions and contact references.
  */
-export interface IPerson extends IDocument {
+export interface IPerson<TResolved extends boolean = false> extends IDocument {
   prename: string;
   name: string;
 
@@ -85,15 +85,19 @@ export interface IPerson extends IDocument {
   // of the digital or physical entity
   // a person refers to
   roles: IRelatedMap<string[]>;
-  institutions: IRelatedMap<Array<IInstitution | IDocument>>;
-  contact_references: IRelatedMap<IContact | IDocument>;
+  institutions: TResolved extends true
+    ? IRelatedMap<IInstitution<true>[], true>
+    : IRelatedMap<Array<IInstitution | IDocument>>;
+  contact_references: TResolved extends true
+    ? IRelatedMap<IContact, true>
+    : IRelatedMap<IContact | IDocument>;
 }
 
 /**
  * Database model of an institution. Makes use of IRelatedMap for roles,
  * notes and addresses.
  */
-export interface IInstitution extends IDocument {
+export interface IInstitution<TResolved extends boolean = false> extends IDocument {
   name: string;
   university: string;
 
@@ -102,7 +106,9 @@ export interface IInstitution extends IDocument {
   // a person refers to
   roles: IRelatedMap<string[]>;
   notes: IRelatedMap<string>;
-  addresses: IRelatedMap<IAddress | IDocument>;
+  addresses: TResolved extends true
+    ? IRelatedMap<IAddress, true>
+    : IRelatedMap<IAddress | IDocument>;
 }
 
 /**
@@ -116,7 +122,10 @@ export interface ITag extends IDocument {
  * Common interface between IPhysicalEntity and IDigitalEntity.
  * Should not be used on its own.
  */
-export interface IBaseEntity<T = Record<string, unknown>> extends IDocument {
+export interface IBaseEntity<
+  TExtensionData = Record<string, unknown>,
+  TResolved extends boolean = false,
+> extends IDocument {
   title: string;
   description: string;
 
@@ -125,18 +134,23 @@ export interface IBaseEntity<T = Record<string, unknown>> extends IDocument {
   biblioRefs: IDescriptionValueTuple[];
   other: IDescriptionValueTuple[];
 
-  persons: (IPerson | IDocument | string)[];
-  institutions: (IInstitution | IDocument | string)[];
+  persons: TResolved extends true ? IPerson<true>[] : (IPerson | IDocument | string)[];
+  institutions: TResolved extends true
+    ? IInstitution<true>[]
+    : (IInstitution | IDocument | string)[];
 
   metadata_files: IFile[];
 
-  extensions?: T;
+  extensions?: TExtensionData;
 }
 
 /**
  * Database model of a physical entity. Uses IBaseEntity.
  */
-export interface IPhysicalEntity<T = Record<string, unknown>> extends IBaseEntity<T> {
+export interface IPhysicalEntity<
+  TExtensionData = Record<string, unknown>,
+  TResolved extends boolean = false,
+> extends IBaseEntity<TExtensionData, TResolved> {
   place: IPlaceTuple;
   collection: string;
 }
@@ -144,12 +158,15 @@ export interface IPhysicalEntity<T = Record<string, unknown>> extends IBaseEntit
 /**
  * Database model of a digital entity. Uses IBaseEntity.
  */
-export interface IDigitalEntity<T = Record<string, unknown>> extends IBaseEntity<T> {
+export interface IDigitalEntity<
+  TExtensionData = Record<string, unknown>,
+  TResolved extends boolean = false,
+> extends IBaseEntity<TExtensionData, TResolved> {
   type: string;
   licence: string;
 
   discipline: string[];
-  tags: (ITag | IDocument)[];
+  tags: TResolved extends true ? ITag[] : (ITag | IDocument)[];
 
   dimensions: IDimensionTuple[];
   creation: ICreationTuple[];
@@ -158,7 +175,9 @@ export interface IDigitalEntity<T = Record<string, unknown>> extends IBaseEntity
   statement: string;
   objecttype: string;
 
-  phyObjs: (IPhysicalEntity<T> | IDocument)[];
+  phyObjs: TResolved extends true
+    ? IPhysicalEntity<TExtensionData, true>[]
+    : (IPhysicalEntity<TExtensionData> | IDocument)[];
 }
 
 /**
@@ -220,9 +239,25 @@ export interface IUserData extends IDocument {
     [Collection.physicalentity]?: Array<IPhysicalEntity | IDocument | string | null>;
     [Collection.tag]?: Array<ITag | IDocument | string | null>;
   };
+
+  profiles?: {
+    [identifier: string]: ProfileType;
+  };
 }
 
 export type IUserDataWithoutData = Omit<IUserData, 'data'>;
+
+export interface IPublicProfile extends IDocument {
+  type: ProfileType;
+  imageUrl: string | undefined;
+  description: string | undefined;
+  displayName: string | undefined;
+  location: string | undefined;
+  socials: {
+    [key: string]: string | undefined;
+    website: string | undefined;
+  };
+}
 
 /**
  * Database model for groups. May be displayed in public,
@@ -423,7 +458,7 @@ export interface IEntity<T = Record<string, unknown>>
   extensions?: T;
 
   access?: {
-    [id: string]: IStrippedUserData & { role: 'owner' | 'editor' | 'viewer' };
+    [id: string]: IStrippedUserData & { role: EntityAccessRole };
   };
 }
 
