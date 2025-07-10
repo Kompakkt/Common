@@ -384,6 +384,7 @@ export interface IPosition {
 export interface IEntitySettings {
   position?: IPosition;
   preview: string;
+  previewVideo?: string;
   cameraPositionInitial: {
     position: IPosition;
     target: IPosition;
