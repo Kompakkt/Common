@@ -37,6 +37,7 @@ export type {
   IVector3,
   IWhitelist,
   IPublicProfile,
+  DataTuple,
 } from './interfaces';
 
 export { Collection, UserRank, EntityAccessRole, ProfileType } from './enums';

@@ -37,6 +37,8 @@ export interface IPlaceTuple {
   address: IAddress;
 }
 
+export type DataTuple = ITypeValueTuple | IDimensionTuple | ICreationTuple | IDescriptionValueTuple;
+
 /**
  * Database model for addresses.
  */
