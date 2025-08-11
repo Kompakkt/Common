@@ -460,8 +460,9 @@ export interface IEntity<T = Record<string, unknown>>
 
   extensions?: T;
 
-  access?: {
-    [id: string]: IStrippedUserData & { role: EntityAccessRole };
+  access?: Record<string, IStrippedUserData & { role: EntityAccessRole }>;
+  options?: {
+    allowDownload?: boolean;
   };
 }
 
