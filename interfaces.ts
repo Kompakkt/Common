@@ -1,5 +1,4 @@
 import { Collection, EntityAccessRole, ProfileType, type UserRank } from './enums';
-import type { Subtract1 } from './helper';
 
 /**
  * Database model for any document saved in the database.
@@ -87,7 +86,7 @@ export interface IRelatedMap<T, TNonNullable extends boolean = true> {
  * Database model of a person. Makes use of IRelatedMap for roles,
  * institutions and contact references.
  */
-export interface IPerson<ResolveDepth extends number = 0> extends IDocument {
+export interface IPerson<TResolved extends boolean = false> extends IDocument {
   prename: string;
   name: string;
 
@@ -95,10 +94,10 @@ export interface IPerson<ResolveDepth extends number = 0> extends IDocument {
   // of the digital or physical entity
   // a person refers to
   roles: IRelatedMap<string[]>;
-  institutions: ResolveDepth extends 0
+  institutions: TResolved extends false
     ? IRelatedMap<Array<IInstitution | IDocument>>
-    : IRelatedMap<IInstitution<Subtract1<ResolveDepth>>[], true>;
-  contact_references: ResolveDepth extends 0
+    : IRelatedMap<IInstitution<true>[], true>;
+  contact_references: TResolved extends false
     ? IRelatedMap<IContact | IDocument>
     : IRelatedMap<IContact, true>;
 }
@@ -107,7 +106,7 @@ export interface IPerson<ResolveDepth extends number = 0> extends IDocument {
  * Database model of an institution. Makes use of IRelatedMap for roles,
  * notes and addresses.
  */
-export interface IInstitution<ResolveDepth extends number = 0> extends IDocument {
+export interface IInstitution<TResolved extends boolean = false> extends IDocument {
   name: string;
   university: string;
 
@@ -116,7 +115,7 @@ export interface IInstitution<ResolveDepth extends number = 0> extends IDocument
   // a person refers to
   roles: IRelatedMap<string[]>;
   notes: IRelatedMap<string>;
-  addresses: ResolveDepth extends 0
+  addresses: TResolved extends false
     ? IRelatedMap<IAddress | IDocument>
     : IRelatedMap<IAddress, true>;
 }
@@ -134,7 +133,7 @@ export interface ITag extends IDocument {
  */
 export interface IBaseEntity<
   TExtensionData = Record<string, unknown>,
-  ResolveDepth extends number = 0,
+  TResolved extends boolean = false,
 > extends IDocument {
   title: string;
   description: string;
@@ -144,12 +143,10 @@ export interface IBaseEntity<
   biblioRefs: IDescriptionValueTuple[];
   other: IDescriptionValueTuple[];
 
-  persons: ResolveDepth extends 0
-    ? (IDocument | string | IPerson)[]
-    : IPerson<Subtract1<ResolveDepth>>[];
-  institutions: ResolveDepth extends 0
+  persons: TResolved extends false ? (IDocument | string | IPerson)[] : IPerson<true>[];
+  institutions: TResolved extends false
     ? (IInstitution | IDocument | string)[]
-    : IInstitution<Subtract1<ResolveDepth>>[];
+    : IInstitution<true>[];
 
   metadata_files: IFile[];
 
@@ -161,8 +158,8 @@ export interface IBaseEntity<
  */
 export interface IPhysicalEntity<
   TExtensionData = Record<string, unknown>,
-  ResolveDepth extends number = 0,
-> extends IBaseEntity<TExtensionData, ResolveDepth> {
+  TResolved extends boolean = false,
+> extends IBaseEntity<TExtensionData, TResolved> {
   place: IPlaceTuple;
   collection: string;
 }
@@ -172,13 +169,13 @@ export interface IPhysicalEntity<
  */
 export interface IDigitalEntity<
   TExtensionData = Record<string, unknown>,
-  ResolveDepth extends number = 0,
-> extends IBaseEntity<TExtensionData, ResolveDepth> {
+  TResolved extends boolean = false,
+> extends IBaseEntity<TExtensionData, TResolved> {
   type: string;
   licence: string;
 
   discipline: string[];
-  tags: ResolveDepth extends 0 ? IDocument[] : ITag[];
+  tags: TResolved extends false ? (IDocument | ITag)[] : ITag[];
 
   dimensions: IDimensionTuple[];
   creation: ICreationTuple[];
@@ -187,9 +184,9 @@ export interface IDigitalEntity<
   statement: string;
   objecttype: string;
 
-  phyObjs: ResolveDepth extends 0
+  phyObjs: TResolved extends false
     ? (IDocument | IPhysicalEntity<TExtensionData>)[]
-    : IPhysicalEntity<TExtensionData, Subtract1<ResolveDepth>>[];
+    : IPhysicalEntity<TExtensionData, true>[];
 }
 
 /**
@@ -436,7 +433,7 @@ interface IAnnotationList {
  *
  * Makes use of IWhitelist and IAnnotationList.
  */
-export interface IEntity<T = Record<string, unknown>, ResolveDepth extends number = 0>
+export interface IEntity<T = Record<string, unknown>, TResolved extends boolean = false>
   extends IWhitelist,
     IAnnotationList,
     Partial<ISortable>,
@@ -446,9 +443,9 @@ export interface IEntity<T = Record<string, unknown>, ResolveDepth extends numbe
   files: IFile[];
   externalFile?: string;
 
-  relatedDigitalEntity: ResolveDepth extends 0
-    ? IDocument
-    : IDigitalEntity<unknown, Subtract1<ResolveDepth>>;
+  relatedDigitalEntity: TResolved extends false
+    ? IDocument | IDigitalEntity<unknown, false>
+    : IDigitalEntity<unknown, true>;
 
   creator: IStrippedUserData;
 
@@ -487,7 +484,7 @@ export interface IEntity<T = Record<string, unknown>, ResolveDepth extends numbe
  *
  * Makes use of IWhitelist and IAnnotationList.
  */
-export interface ICompilation<ResolveDepth extends number = 0>
+export interface ICompilation<TResolved extends boolean = false>
   extends IWhitelist,
     IAnnotationList,
     Partial<ISortable>,
@@ -497,7 +494,9 @@ export interface ICompilation<ResolveDepth extends number = 0>
   creator: IStrippedUserData;
   password?: string | boolean;
   entities: {
-    [id: string]: ResolveDepth extends 0 ? IDocument : IEntity<unknown, Subtract1<ResolveDepth>>;
+    [id: string]: TResolved extends false
+      ? IDocument | IEntity<unknown, false>
+      : IEntity<unknown, true>;
   };
 }
 
