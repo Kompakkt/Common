@@ -259,7 +259,7 @@ export interface IUserData extends IDocument {
 
 export type IUserDataWithoutData = Omit<IUserData, 'data'>;
 
-export interface IPublicProfile extends ISortable, IDocument {
+export interface IPublicProfile extends Partial<ISortable>, IDocument {
   type: ProfileType;
   imageUrl: string | undefined;
   description: string | undefined;
@@ -439,7 +439,7 @@ interface IAnnotationList {
 export interface IEntity<T = Record<string, unknown>, ResolveDepth extends number = 0>
   extends IWhitelist,
     IAnnotationList,
-    ISortable,
+    Partial<ISortable>,
     IDocument {
   name: string;
 
@@ -490,7 +490,7 @@ export interface IEntity<T = Record<string, unknown>, ResolveDepth extends numbe
 export interface ICompilation<ResolveDepth extends number = 0>
   extends IWhitelist,
     IAnnotationList,
-    ISortable,
+    Partial<ISortable>,
     IDocument {
   name: string;
   description: string;
