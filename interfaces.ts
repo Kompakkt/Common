@@ -15,6 +15,12 @@ export interface ISortable {
   __normalizedName: string;
 }
 
+export interface IFilterable {
+  __licenses: string[];
+  __mediaTypes: string[];
+  __downloadable: boolean;
+}
+
 export interface ITypeValueTuple {
   type: string;
   value: string;
@@ -256,7 +262,7 @@ export interface IUserData extends IDocument {
 
 export type IUserDataWithoutData = Omit<IUserData, 'data'>;
 
-export interface IPublicProfile extends Partial<ISortable>, IDocument {
+export interface IPublicProfile extends Partial<ISortable>, Partial<IFilterable>, IDocument {
   type: ProfileType;
   imageUrl: string | undefined;
   description: string | undefined;
@@ -424,6 +430,8 @@ interface IAnnotationList {
   };
 }
 
+export type AccessField = Record<string, IStrippedUserData & { role: EntityAccessRole }>;
+
 /**
  * Database model of an entity.
  *
@@ -437,6 +445,7 @@ export interface IEntity<T = Record<string, unknown>, TResolved extends boolean 
   extends IWhitelist,
     IAnnotationList,
     Partial<ISortable>,
+    Partial<IFilterable>,
     IDocument {
   name: string;
 
@@ -470,7 +479,7 @@ export interface IEntity<T = Record<string, unknown>, TResolved extends boolean 
 
   extensions?: T;
 
-  access?: Record<string, IStrippedUserData & { role: EntityAccessRole }>;
+  access?: AccessField;
   options?: {
     allowDownload?: boolean;
   };
@@ -488,6 +497,7 @@ export interface ICompilation<TResolved extends boolean = false>
   extends IWhitelist,
     IAnnotationList,
     Partial<ISortable>,
+    Partial<IFilterable>,
     IDocument {
   name: string;
   description: string;
@@ -498,6 +508,7 @@ export interface ICompilation<TResolved extends boolean = false>
       ? IDocument | IEntity<unknown, false>
       : IEntity<unknown, true>;
   };
+  access?: AccessField;
 }
 
 export interface ISizedEvent {
