@@ -410,7 +410,7 @@ export interface IEntitySettings {
   };
   lights: IEntityLight[];
   rotation: IPosition;
-  scale: number;
+  scale: IPosition;
   translate?: IPosition;
 }
 
