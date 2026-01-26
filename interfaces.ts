@@ -430,7 +430,8 @@ interface IAnnotationList {
   };
 }
 
-export type AccessField = Record<string, IStrippedUserData & { role: EntityAccessRole }>;
+export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole, groupId?: string };
+export type AccessField = Record<string, AccessFieldEntry>;
 
 /**
  * Database model of an entity.
