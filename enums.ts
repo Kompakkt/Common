@@ -44,5 +44,5 @@ export enum EntityAccessRole {
 
 export enum ProfileType {
   user = 'user',
-  institution = 'institution',
+  organization = 'organization',
 }
