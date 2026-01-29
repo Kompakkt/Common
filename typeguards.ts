@@ -7,7 +7,6 @@ import type {
   IDocument,
   IEntity,
   IEntitySettings,
-  IGroup,
   IInstitution,
   IPerson,
   IPhysicalEntity,
@@ -64,13 +63,6 @@ const hasExtensions = (obj: any): obj is { extensions: Record<string, unknown> }
   if (!isDefined(obj)) return false;
   return checkProps(['extensions'], obj);
 };
-
-/**
- * Checks whether an object is a group entry
- * @type {Boolean}
- */
-const isGroup = (obj: any): obj is IGroup => checkProps(GROUP_PROPS, obj);
-const GROUP_PROPS = ['name', 'creator', 'owners', 'members'];
 
 /**
  * Checks whether an object is a tag entry
@@ -192,7 +184,6 @@ export {
   isDocument,
   isEntity,
   isEntitySettings,
-  isGroup,
   isInstitution,
   isMetadataEntity,
   isPerson,

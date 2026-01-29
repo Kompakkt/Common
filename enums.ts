@@ -29,7 +29,6 @@ export enum Collection {
   contact = 'contact',
   digitalentity = 'digitalentity',
   entity = 'entity',
-  group = 'group',
   institution = 'institution',
   person = 'person',
   physicalentity = 'physicalentity',

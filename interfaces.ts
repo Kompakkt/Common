@@ -216,17 +216,15 @@ export type UserDataCollectionDocumentType<C extends Collection> = C extends Col
           ? IDigitalEntity
           : C extends Collection.entity
             ? IEntity
-            : C extends Collection.group
-              ? IGroup
-              : C extends Collection.institution
-                ? IInstitution
-                : C extends Collection.person
-                  ? IPerson
-                  : C extends Collection.physicalentity
-                    ? IPhysicalEntity
-                    : C extends Collection.tag
-                      ? ITag
-                      : IDocument;
+            : C extends Collection.institution
+              ? IInstitution
+              : C extends Collection.person
+                ? IPerson
+                : C extends Collection.physicalentity
+                  ? IPhysicalEntity
+                  : C extends Collection.tag
+                    ? ITag
+                    : IDocument;
 
 /**
  * Database model for users. Should not be displayed in public,
@@ -248,7 +246,6 @@ export interface IUserData extends IDocument {
     [Collection.contact]?: Array<IContact | IDocument | string | null>;
     [Collection.digitalentity]?: Array<IDigitalEntity | IDocument | string | null>;
     [Collection.entity]?: Array<IDocument | string | null>;
-    [Collection.group]?: Array<IGroup | IDocument | string | null>;
     [Collection.institution]?: Array<IInstitution | IDocument | string | null>;
     [Collection.person]?: Array<IPerson | IDocument | string | null>;
     [Collection.physicalentity]?: Array<IPhysicalEntity | IDocument | string | null>;
@@ -272,17 +269,6 @@ export interface IPublicProfile extends Partial<ISortable>, Partial<IFilterable>
     [key: string]: string | undefined;
     website: string | undefined;
   };
-}
-
-/**
- * Database model for groups. May be displayed in public,
- * as it only contains stripped user data.
- */
-export interface IGroup extends IDocument {
-  name: string;
-  creator: IStrippedUserData & { profile?: Pick<IPublicProfile, 'imageUrl' | 'displayName'> };
-  owners: (IStrippedUserData & { profile?: Pick<IPublicProfile, 'imageUrl' | 'displayName'> })[];
-  members: (IStrippedUserData & { profile?: Pick<IPublicProfile, 'imageUrl' | 'displayName'> })[];
 }
 
 /**
@@ -372,14 +358,12 @@ export interface IFile {
 
 /**
  * Describes any database model that can be protected by a whitelist of users
- * or groups.
  * Should not be used on its own.
  */
 export interface IWhitelist {
   whitelist: {
     enabled: boolean;
     persons: IStrippedUserData[];
-    groups: IGroup[];
   };
 }
 
@@ -443,11 +427,7 @@ export type AccessField = Record<string, AccessFieldEntry>;
  * Makes use of IWhitelist and IAnnotationList.
  */
 export interface IEntity<T = Record<string, unknown>, TResolved extends boolean = false>
-  extends IWhitelist,
-    IAnnotationList,
-    Partial<ISortable>,
-    Partial<IFilterable>,
-    IDocument {
+  extends IWhitelist, IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
   name: string;
 
   files: IFile[];
@@ -495,11 +475,7 @@ export interface IEntity<T = Record<string, unknown>, TResolved extends boolean 
  * Makes use of IWhitelist and IAnnotationList.
  */
 export interface ICompilation<TResolved extends boolean = false>
-  extends IWhitelist,
-    IAnnotationList,
-    Partial<ISortable>,
-    Partial<IFilterable>,
-    IDocument {
+  extends IWhitelist, IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
   name: string;
   description: string;
   creator: IStrippedUserData;
