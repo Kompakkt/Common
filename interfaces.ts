@@ -415,8 +415,10 @@ interface IAnnotationList {
   };
 }
 
-export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole, groupId?: string };
+export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole; groupId?: string };
 export type AccessField = Record<string, AccessFieldEntry>;
+
+export type CreatorField = IStrippedUserData & { profile: { _id: string; type: ProfileType } };
 
 /**
  * Database model of an entity.
@@ -438,7 +440,7 @@ export interface IEntity<T = Record<string, unknown>, TResolved extends boolean 
     ? IDocument | IDigitalEntity<unknown, false>
     : IDigitalEntity<unknown, true>;
 
-  creator: IStrippedUserData;
+  creator: CreatorField;
 
   online: boolean;
   finished: boolean;
@@ -479,7 +481,7 @@ export interface ICompilation<TResolved extends boolean = false>
   extends IWhitelist, IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
   name: string;
   description: string;
-  creator: IStrippedUserData;
+  creator: CreatorField;
   password?: string | boolean;
   entities: {
     [id: string]: TResolved extends false
