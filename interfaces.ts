@@ -253,9 +253,10 @@ export interface IUserData extends IDocument {
     [Collection.tag]?: Array<ITag | IDocument | string | null>;
   };
 
-  profiles?: {
-    [identifier: string]: ProfileType;
-  };
+  profiles: Array<{
+    type: ProfileType;
+    profileId: string;
+  }>;
 }
 
 export type IUserDataWithoutData = Omit<IUserData, 'data'>;
