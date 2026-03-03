@@ -168,6 +168,7 @@ export interface IPhysicalEntity<
 > extends IBaseEntity<TExtensionData, TResolved> {
   place: IPlaceTuple;
   collection: string;
+  dimensions: IDimensionTuple[];
 }
 
 /**
