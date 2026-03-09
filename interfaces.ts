@@ -233,12 +233,14 @@ export type UserDataCollectionDocumentType<C extends Collection> = C extends Col
  */
 export interface IUserData extends IDocument {
   username: string;
-  sessionID?: string;
   fullname: string;
   prename: string;
   surname: string;
   mail: string;
   role: UserRank;
+  strategy: string;
+
+  sessionID?: string;
 
   data: {
     [Collection.address]?: Array<IAddress | IDocument | string | null>;
