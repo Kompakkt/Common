@@ -168,6 +168,7 @@ export interface IPhysicalEntity<
 > extends IBaseEntity<TExtensionData, TResolved> {
   place: IPlaceTuple;
   collection: string;
+  dimensions: IDimensionTuple[];
 }
 
 /**
@@ -232,12 +233,14 @@ export type UserDataCollectionDocumentType<C extends Collection> = C extends Col
  */
 export interface IUserData extends IDocument {
   username: string;
-  sessionID?: string;
   fullname: string;
   prename: string;
   surname: string;
   mail: string;
   role: UserRank;
+  strategy: string;
+
+  sessionID?: string;
 
   data: {
     [Collection.address]?: Array<IAddress | IDocument | string | null>;
@@ -252,9 +255,10 @@ export interface IUserData extends IDocument {
     [Collection.tag]?: Array<ITag | IDocument | string | null>;
   };
 
-  profiles?: {
-    [identifier: string]: ProfileType;
-  };
+  profiles: Array<{
+    type: ProfileType;
+    profileId: string;
+  }>;
 }
 
 export type IUserDataWithoutData = Omit<IUserData, 'data'>;
@@ -414,8 +418,10 @@ interface IAnnotationList {
   };
 }
 
-export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole, groupId?: string };
+export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole; groupId?: string };
 export type AccessField = Record<string, AccessFieldEntry>;
+
+export type CreatorField = IStrippedUserData & { profile: { _id: string; type: ProfileType } };
 
 /**
  * Database model of an entity.
@@ -437,7 +443,7 @@ export interface IEntity<T = Record<string, unknown>, TResolved extends boolean 
     ? IDocument | IDigitalEntity<unknown, false>
     : IDigitalEntity<unknown, true>;
 
-  creator: IStrippedUserData;
+  creator: CreatorField;
 
   online: boolean;
   finished: boolean;
@@ -478,7 +484,7 @@ export interface ICompilation<TResolved extends boolean = false>
   extends IWhitelist, IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
   name: string;
   description: string;
-  creator: IStrippedUserData;
+  creator: CreatorField;
   password?: string | boolean;
   entities: {
     [id: string]: TResolved extends false
