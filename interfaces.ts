@@ -418,10 +418,12 @@ interface IAnnotationList {
   };
 }
 
-export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole; groupId?: string };
-export type AccessField = Record<string, AccessFieldEntry>;
+export type ProfileReference = { profileId: string; type: ProfileType };
 
-export type CreatorField = IStrippedUserData & { profile: { _id: string; type: ProfileType } };
+export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole; profile: ProfileReference };
+export type AccessField = Array<AccessFieldEntry>;
+
+export type CreatorField = IStrippedUserData & { profile: ProfileReference };
 
 /**
  * Database model of an entity.
@@ -430,10 +432,10 @@ export type CreatorField = IStrippedUserData & { profile: { _id: string; type: P
  * information about the files uploaded as well as a reference to the
  * digital entity described/connected to the uploaded entity.
  *
- * Makes use of IWhitelist and IAnnotationList.
+ * Makes use of and IAnnotationList.
  */
 export interface IEntity<T = Record<string, unknown>, TResolved extends boolean = false>
-  extends IWhitelist, IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
+  extends IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
   name: string;
 
   files: IFile[];
@@ -466,7 +468,7 @@ export interface IEntity<T = Record<string, unknown>, TResolved extends boolean 
 
   extensions?: T;
 
-  access?: AccessField;
+  access: AccessField;
   options?: {
     allowDownload?: boolean;
   };
@@ -478,10 +480,10 @@ export interface IEntity<T = Record<string, unknown>, TResolved extends boolean 
  * A compilation contains a list of entities aswell as information on
  * who created the compilation.
  *
- * Makes use of IWhitelist and IAnnotationList.
+ * Makes use of IAnnotationList.
  */
 export interface ICompilation<TResolved extends boolean = false>
-  extends IWhitelist, IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
+  extends IAnnotationList, Partial<ISortable>, Partial<IFilterable>, IDocument {
   name: string;
   description: string;
   creator: CreatorField;
@@ -491,7 +493,7 @@ export interface ICompilation<TResolved extends boolean = false>
       ? IDocument | IEntity<unknown, false>
       : IEntity<unknown, true>;
   };
-  access?: AccessField;
+  access: AccessField;
 }
 
 export interface ISizedEvent {
