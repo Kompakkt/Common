@@ -4,14 +4,14 @@
  * This rank/role is bound to the account, but can be changed by an administrator
  *
  * Ranks/Roles:
- * - user: any registered person
- * - uploadrequested: a registered person that sent an application to gain upload permission
  * - upload: a registered person with upload permission
  * - admin: site administrators
+ *
+ * Deprecated Ranks/Roles (since all users are uploader by default now):
+ * - user: any registered person
+ * - uploadrequested: a registered person that sent an application to gain upload permission
  */
 export enum UserRank {
-  user = 'user',
-  uploadrequested = 'uploadrequested',
   uploader = 'uploader',
   admin = 'admin',
 }
