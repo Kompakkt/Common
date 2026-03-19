@@ -1,0 +1,12 @@
+{
+  "name": "@kompakkt/common",
+  "version": "0.0.1",
+  "description": "Shared types, interfaces, enums and typeguards for Kompakkt",
+  "main": "index.ts",
+  "types": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kompakkt/Common.git"
+  },
+  "license": "AGPL-3.0"
+}
