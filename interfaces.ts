@@ -420,7 +420,10 @@ interface IAnnotationList {
 
 export type ProfileReference = { profileId: string; type: ProfileType };
 
-export type AccessFieldEntry = IStrippedUserData & { role: EntityAccessRole; profile: ProfileReference };
+export type AccessFieldEntry = IStrippedUserData & {
+  role: EntityAccessRole;
+  profile: ProfileReference;
+};
 export type AccessField = Array<AccessFieldEntry>;
 
 export type CreatorField = IStrippedUserData & { profile: ProfileReference };
@@ -487,13 +490,19 @@ export interface ICompilation<TResolved extends boolean = false>
   name: string;
   description: string;
   creator: CreatorField;
-  password?: string | boolean;
+
   entities: {
     [id: string]: TResolved extends false
       ? IDocument | IEntity<unknown, false>
       : IEntity<unknown, true>;
   };
   access: AccessField;
+
+  // Optional until migration is complete
+  online?: boolean;
+
+  // Deprecated in favor of "online", similar to IEntity, kept for migration purposes
+  password?: string | boolean;
 }
 
 export interface ISizedEvent {
