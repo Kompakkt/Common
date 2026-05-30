@@ -468,7 +468,9 @@ export const IEntityResolvedOnlyDigitalEntity = t.Intersect([
   t.Omit(IEntity, ['relatedDigitalEntity']),
   t.Object({ relatedDigitalEntity: IDigitalEntity }),
 ]);
-export type IEntityResolvedOnlyDigitalEntity = UnwrapSchema<typeof IEntityResolvedOnlyDigitalEntity>;
+export type IEntityResolvedOnlyDigitalEntity = UnwrapSchema<
+  typeof IEntityResolvedOnlyDigitalEntity
+>;
 
 export const ICompilation = t.Intersect([
   IAnnotationList,
@@ -503,7 +505,9 @@ export const ICompilationResolvedOnlyEntities = t.Intersect([
     entities: t.Record(t.String(), IEntity),
   }),
 ]);
-export type ICompilationResolvedOnlyEntities = UnwrapSchema<typeof ICompilationResolvedOnlyEntities>;
+export type ICompilationResolvedOnlyEntities = UnwrapSchema<
+  typeof ICompilationResolvedOnlyEntities
+>;
 
 export const IUserData = t.Object({
   _id: t.String(),
@@ -516,32 +520,32 @@ export const IUserData = t.Object({
   strategy: t.String(),
   sessionID: t.Optional(t.String()),
   data: t.Object({
-    [CollectionEnumSchema.address]: t.Optional(
+    [CollectionEnumSchema.enum[0]]: t.Optional(
       t.Array(t.Union([IAddress, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.annotation]: t.Optional(
+    [CollectionEnumSchema.enum[1]]: t.Optional(
       t.Array(t.Union([IAnnotation, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.compilation]: t.Optional(
+    [CollectionEnumSchema.enum[2]]: t.Optional(
       t.Array(t.Union([ICompilation, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.contact]: t.Optional(
+    [CollectionEnumSchema.enum[3]]: t.Optional(
       t.Array(t.Union([IContact, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.digitalentity]: t.Optional(
+    [CollectionEnumSchema.enum[4]]: t.Optional(
       t.Array(t.Union([IDigitalEntity, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.entity]: t.Optional(t.Array(t.Union([IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.institution]: t.Optional(
+    [CollectionEnumSchema.enum[5]]: t.Optional(t.Array(t.Union([IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.enum[6]]: t.Optional(
       t.Array(t.Union([IInstitution, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.person]: t.Optional(
+    [CollectionEnumSchema.enum[7]]: t.Optional(
       t.Array(t.Union([IPerson, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.physicalentity]: t.Optional(
+    [CollectionEnumSchema.enum[8]]: t.Optional(
       t.Array(t.Union([IPhysicalEntity, IDocument, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.tag]: t.Optional(
+    [CollectionEnumSchema.enum[9]]: t.Optional(
       t.Array(t.Union([ITag, IDocument, t.String(), t.Null()])),
     ),
   }),
