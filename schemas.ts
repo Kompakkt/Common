@@ -464,6 +464,11 @@ export const IEntityResolved = t.Intersect([
 ]);
 export type IEntityResolved = UnwrapSchema<typeof IEntityResolved>;
 
+export const IEntityResolvedOnlyDigitalEntity = t.Intersect([
+  t.Omit(IEntity, ['relatedDigitalEntity']),
+  t.Object({ relatedDigitalEntity: IDigitalEntity }),
+]);
+
 export const ICompilation = t.Intersect([
   IAnnotationList,
   IEntityPartialSortable,
@@ -485,10 +490,18 @@ export const ICompilationResolved = t.Intersect([
   t.Omit(ICompilation, ['entities', 'annotations']),
   t.Object({
     annotations: IAnnotationListResolved,
-    entities: t.Record(t.String(), IEntity),
+    entities: t.Record(t.String(), IEntityResolved),
   }),
 ]);
 export type ICompilationResolved = UnwrapSchema<typeof ICompilationResolved>;
+
+export const ICompilationResolvedOnlyEntities = t.Intersect([
+  t.Omit(ICompilation, ['entities', 'annotations']),
+  t.Object({
+    annotations: IAnnotationList,
+    entities: t.Record(t.String(), IEntity),
+  }),
+]);
 
 export const IUserData = t.Object({
   _id: t.String(),
