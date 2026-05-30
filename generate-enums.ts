@@ -14,6 +14,8 @@ const generateEnums = async () => {
     const cleanName = name.replace('EnumSchema', '');
     const enumDefinition = `export enum ${cleanName} {\n${enumValues.map((value: string) => `  ${value} = '${value}',`).join('\n')}\n}`;
     generatedEnums.push(enumDefinition);
+    const typeguardDefinition = `export const is${cleanName} = (value: unknown): value is ${cleanName} =>\n  typeof value === 'string' && Object.values(${cleanName}).includes(value as ${cleanName});`;
+    generatedEnums.push(typeguardDefinition);
   }
 
   await Bun.write('./enums.ts', generatedEnums.join('\n\n') + '\n');
