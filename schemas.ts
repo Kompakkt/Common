@@ -305,6 +305,14 @@ export const IInstitution = t.Object({
 });
 export type IInstitution = UnwrapSchema<typeof IInstitution>;
 
+export const IInstitutionResolved = t.Intersect([
+  t.Omit(IInstitution, ['addresses']),
+  t.Object({
+    addresses: t.Record(t.String(), IAddress),
+  }),
+]);
+export type IInstitutionResolved = UnwrapSchema<typeof IInstitutionResolved>;
+
 export const IPerson = t.Object({
   _id: t.String(),
   prename: t.String(),
@@ -314,6 +322,15 @@ export const IPerson = t.Object({
   contact_references: t.Record(t.String(), t.Union([IContact, IDocument])),
 });
 export type IPerson = UnwrapSchema<typeof IPerson>;
+
+export const IPersonResolved = t.Intersect([
+  t.Omit(IPerson, ['institutions', 'contact_references']),
+  t.Object({
+    institutions: t.Record(t.String(), t.Array(IInstitution)),
+    contact_references: t.Record(t.String(), t.Array(IContact)),
+  }),
+]);
+export type IPersonResolved = UnwrapSchema<typeof IPersonResolved>;
 
 export const IBaseEntity = t.Object({
   _id: t.String(),
@@ -330,6 +347,15 @@ export const IBaseEntity = t.Object({
 });
 export type IBaseEntity = UnwrapSchema<typeof IBaseEntity>;
 
+export const IBaseEntityResolved = t.Intersect([
+  t.Omit(IBaseEntity, ['persons', 'institutions']),
+  t.Object({
+    persons: t.Array(IPersonResolved),
+    institutions: t.Array(IInstitutionResolved),
+  }),
+]);
+export type IBaseEntityResolved = UnwrapSchema<typeof IBaseEntityResolved>;
+
 export const IPhysicalEntity = t.Intersect([
   IBaseEntity,
   t.Object({
@@ -339,6 +365,12 @@ export const IPhysicalEntity = t.Intersect([
   }),
 ]);
 export type IPhysicalEntity = UnwrapSchema<typeof IPhysicalEntity>;
+
+export const IPhysicalEntityResolved = t.Intersect([
+  t.Omit(IPhysicalEntity, ['persons', 'institutions']),
+  t.Pick(IBaseEntityResolved, ['persons', 'institutions']),
+]);
+export type IPhysicalEntityResolved = UnwrapSchema<typeof IPhysicalEntityResolved>;
 
 export const IDigitalEntity = t.Intersect([
   IBaseEntity,
@@ -357,10 +389,25 @@ export const IDigitalEntity = t.Intersect([
 ]);
 export type IDigitalEntity = UnwrapSchema<typeof IDigitalEntity>;
 
+export const IDigitalEntityResolved = t.Intersect([
+  t.Omit(IDigitalEntity, ['persons', 'institutions', 'tags', 'phyObjs']),
+  t.Pick(IBaseEntityResolved, ['persons', 'institutions']),
+  t.Object({
+    tags: t.Array(ITag),
+    phyObjs: t.Array(IPhysicalEntityResolved),
+  }),
+]);
+export type IDigitalEntityResolved = UnwrapSchema<typeof IDigitalEntityResolved>;
+
 export const IAnnotationList = t.Object({
   annotations: t.Record(t.String(), t.Union([IAnnotation, IDocument])),
 });
 export type IAnnotationList = UnwrapSchema<typeof IAnnotationList>;
+
+export const IAnnotationListResolved = t.Object({
+  annotations: t.Record(t.String(), IAnnotation),
+});
+export type IAnnotationListResolved = UnwrapSchema<typeof IAnnotationListResolved>;
 
 const IEntityPartialSortable = t.Object({
   __hits: t.Optional(t.Number()),
@@ -411,6 +458,12 @@ export const IEntity = t.Intersect([
 ]);
 export type IEntity = UnwrapSchema<typeof IEntity>;
 
+export const IEntityResolved = t.Intersect([
+  t.Omit(IEntity, ['relatedDigitalEntity']),
+  t.Object({ relatedDigitalEntity: IDigitalEntityResolved }),
+]);
+export type IEntityResolved = UnwrapSchema<typeof IEntityResolved>;
+
 export const ICompilation = t.Intersect([
   IAnnotationList,
   IEntityPartialSortable,
@@ -427,6 +480,15 @@ export const ICompilation = t.Intersect([
   }),
 ]);
 export type ICompilation = UnwrapSchema<typeof ICompilation>;
+
+export const ICompilationResolved = t.Intersect([
+  t.Omit(ICompilation, ['entities', 'annotations']),
+  t.Object({
+    annotations: IAnnotationListResolved,
+    entities: t.Record(t.String(), IEntity),
+  }),
+]);
+export type ICompilationResolved = UnwrapSchema<typeof ICompilationResolved>;
 
 export const IUserData = t.Object({
   _id: t.String(),
