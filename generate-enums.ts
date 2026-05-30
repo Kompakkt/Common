@@ -10,7 +10,8 @@ const generateEnums = async () => {
   for (const [name, schema] of enumSchemas) {
     const enumValues = schema.enum;
     if (!Array.isArray(enumValues)) continue;
-    const enumDefinition = `export enum ${name} {\n${enumValues.map((value: string) => `  ${value} = "${value}",`).join('\n')}\n}`;
+    const cleanName = name.replace('EnumSchema', '');
+    const enumDefinition = `export enum ${cleanName} {\n${enumValues.map((value: string) => `  ${value} = "${value}",`).join('\n')}\n}`;
     generatedEnums.push(enumDefinition);
   }
 

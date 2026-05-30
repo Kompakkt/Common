@@ -1,20 +1,17 @@
 import { t, UnwrapSchema } from 'elysia';
 
-export const UserRank = t.UnionEnum(['uploader', 'admin']);
-export type UserRank = UnwrapSchema<typeof UserRank>;
+// # Enums
+// These don't need to use UnwrapSchema, as they're real enums are generated using the `generate-enums.ts` script.
 
-export const Collection = t.UnionEnum([
+export const UserRankEnumSchema = t.UnionEnum(['uploader', 'admin']);
+export const CollectionEnumSchema = t.UnionEnum([
   'address', 'annotation', 'compilation', 'contact',
   'digitalentity', 'entity', 'institution', 'person',
   'physicalentity', 'tag'
 ]);
-export type Collection = UnwrapSchema<typeof Collection>;
 
-export const EntityAccessRole = t.UnionEnum(['owner', 'editor', 'viewer']);
-export type EntityAccessRole = UnwrapSchema<typeof EntityAccessRole>;
-
-export const ProfileType = t.UnionEnum(['user', 'organization']);
-export type ProfileType = UnwrapSchema<typeof ProfileType>;
+export const EntityAccessRoleEnumSchema = t.UnionEnum(['owner', 'editor', 'viewer']);
+export const ProfileTypeEnumSchema = t.UnionEnum(['user', 'organization']);
 
 export const IDocument = t.Object({
   _id: t.String(),
@@ -99,14 +96,14 @@ export type IStrippedUserData = UnwrapSchema<typeof IStrippedUserData>;
 
 export const ProfileReference = t.Object({
   profileId: t.String(),
-  type: ProfileType,
+  type: ProfileTypeEnumSchema,
 });
 export type ProfileReference = UnwrapSchema<typeof ProfileReference>;
 
 export const AccessFieldEntry = t.Intersect([
   IStrippedUserData,
   t.Object({
-    role: EntityAccessRole,
+    role: EntityAccessRoleEnumSchema,
     profile: ProfileReference,
   }),
 ]);
@@ -280,30 +277,25 @@ export const IPlaceTuple = t.Object({
 });
 export type IPlaceTuple = UnwrapSchema<typeof IPlaceTuple>;
 
-export const IRelatedMap = t.Record(t.String(), t.Any());
-export type IRelatedMap<T = unknown> = {
-  [key: string]: T;
-};
+export const IInstitution = t.Object({
+  _id: t.String(),
+  name: t.String(),
+  university: t.String(),
+  roles: t.Record(t.String(), t.Array(t.String())),
+  notes: t.Record(t.String(), t.String()),
+  addresses: t.Record(t.String(), t.Union([IAddress, IDocument])),
+});
+export type IInstitution = UnwrapSchema<typeof IInstitution>;
 
 export const IPerson = t.Object({
   _id: t.String(),
   prename: t.String(),
   name: t.String(),
-  roles: IRelatedMap,
-  institutions: IRelatedMap,
-  contact_references: IRelatedMap,
+  roles: t.Record(t.String(), t.Array(t.String())),
+  institutions: t.Record(t.String(), t.Array(t.Union([IInstitution, IDocument]))),
+  contact_references: t.Record(t.String(), t.Union([IContact, IDocument])),
 });
 export type IPerson = UnwrapSchema<typeof IPerson>;
-
-export const IInstitution = t.Object({
-  _id: t.String(),
-  name: t.String(),
-  university: t.String(),
-  roles: IRelatedMap,
-  notes: IRelatedMap,
-  addresses: IRelatedMap,
-});
-export type IInstitution = UnwrapSchema<typeof IInstitution>;
 
 export const IBaseEntity = t.Object({
   _id: t.String(),
@@ -423,23 +415,23 @@ export const IUserData = t.Object({
   prename: t.String(),
   surname: t.String(),
   mail: t.String(),
-  role: UserRank,
+  role: UserRankEnumSchema,
   strategy: t.String(),
   sessionID: t.Optional(t.String()),
   data: t.Object({
-    [Collection.address]: t.Optional(t.Array(t.Union([IAddress, IDocument, t.String(), t.Null()]))),
-    [Collection.annotation]: t.Optional(t.Array(t.Union([IAnnotation, IDocument, t.String(), t.Null()]))),
-    [Collection.compilation]: t.Optional(t.Array(t.Union([ICompilation, IDocument, t.String(), t.Null()]))),
-    [Collection.contact]: t.Optional(t.Array(t.Union([IContact, IDocument, t.String(), t.Null()]))),
-    [Collection.digitalentity]: t.Optional(t.Array(t.Union([IDigitalEntity, IDocument, t.String(), t.Null()]))),
-    [Collection.entity]: t.Optional(t.Array(t.Union([IDocument, t.String(), t.Null()]))),
-    [Collection.institution]: t.Optional(t.Array(t.Union([IInstitution, IDocument, t.String(), t.Null()]))),
-    [Collection.person]: t.Optional(t.Array(t.Union([IPerson, IDocument, t.String(), t.Null()]))),
-    [Collection.physicalentity]: t.Optional(t.Array(t.Union([IPhysicalEntity, IDocument, t.String(), t.Null()]))),
-    [Collection.tag]: t.Optional(t.Array(t.Union([ITag, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.address]: t.Optional(t.Array(t.Union([IAddress, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.annotation]: t.Optional(t.Array(t.Union([IAnnotation, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.compilation]: t.Optional(t.Array(t.Union([ICompilation, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.contact]: t.Optional(t.Array(t.Union([IContact, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.digitalentity]: t.Optional(t.Array(t.Union([IDigitalEntity, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.entity]: t.Optional(t.Array(t.Union([IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.institution]: t.Optional(t.Array(t.Union([IInstitution, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.person]: t.Optional(t.Array(t.Union([IPerson, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.physicalentity]: t.Optional(t.Array(t.Union([IPhysicalEntity, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.tag]: t.Optional(t.Array(t.Union([ITag, IDocument, t.String(), t.Null()]))),
   }),
   profiles: t.Array(t.Object({
-    type: ProfileType,
+    type: ProfileTypeEnumSchema,
     profileId: t.String(),
   })),
 });
@@ -448,7 +440,7 @@ export type IUserData = UnwrapSchema<typeof IUserData>;
 export const IPublicProfile = t.Intersect([
   t.Object({
     _id: t.String(),
-    type: ProfileType,
+    type: ProfileTypeEnumSchema,
     imageUrl: t.Optional(t.String()),
     description: t.Optional(t.String()),
     displayName: t.Optional(t.String()),
