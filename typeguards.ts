@@ -99,7 +99,9 @@ const ENTITY_SETTINGS_PROPS = ['preview', 'cameraPositionInitial', 'background',
  * Checks whether an <IEntity | IDocument> is fully resolved
  * @type {Boolean}
  */
-const isResolvedEntity = (obj: unknown): obj is IEntity & { relatedDigitalEntity: IDigitalEntity } =>
+const isResolvedEntity = (
+  obj: unknown,
+): obj is IEntity & { relatedDigitalEntity: IDigitalEntity } =>
   isEntity(obj) && isDigitalEntity(obj.relatedDigitalEntity);
 
 /**

@@ -5,9 +5,16 @@ import { t, UnwrapSchema } from 'elysia';
 
 export const UserRankEnumSchema = t.UnionEnum(['uploader', 'admin']);
 export const CollectionEnumSchema = t.UnionEnum([
-  'address', 'annotation', 'compilation', 'contact',
-  'digitalentity', 'entity', 'institution', 'person',
-  'physicalentity', 'tag'
+  'address',
+  'annotation',
+  'compilation',
+  'contact',
+  'digitalentity',
+  'entity',
+  'institution',
+  'person',
+  'physicalentity',
+  'tag',
 ]);
 
 export const EntityAccessRoleEnumSchema = t.UnionEnum(['owner', 'editor', 'viewer']);
@@ -60,7 +67,12 @@ export const IDescriptionValueTuple = t.Object({
 });
 export type IDescriptionValueTuple = UnwrapSchema<typeof IDescriptionValueTuple>;
 
-export const DataTuple = t.Union([ITypeValueTuple, IDimensionTuple, ICreationTuple, IDescriptionValueTuple]);
+export const DataTuple = t.Union([
+  ITypeValueTuple,
+  IDimensionTuple,
+  ICreationTuple,
+  IDescriptionValueTuple,
+]);
 export type DataTuple = UnwrapSchema<typeof DataTuple>;
 
 export const IAddress = t.Object({
@@ -205,13 +217,16 @@ export const ICameraPerspective = t.Object({
 });
 export type ICameraPerspective = UnwrapSchema<typeof ICameraPerspective>;
 
-export const IContent = t.Object({
-  type: t.String(),
-  title: t.String(),
-  description: t.String(),
-  link: t.Optional(t.String()),
-  relatedPerspective: ICameraPerspective,
-}, { additionalProperties: true });
+export const IContent = t.Object(
+  {
+    type: t.String(),
+    title: t.String(),
+    description: t.String(),
+    link: t.Optional(t.String()),
+    relatedPerspective: ICameraPerspective,
+  },
+  { additionalProperties: true },
+);
 export type IContent = UnwrapSchema<typeof IContent>;
 
 export const IBody = t.Object({
@@ -387,9 +402,11 @@ export const IEntity = t.Intersect([
     settings: IEntitySettings,
     extensions: t.Optional(t.Record(t.String(), t.Any())),
     access: AccessField,
-    options: t.Optional(t.Object({
-      allowDownload: t.Optional(t.Boolean()),
-    })),
+    options: t.Optional(
+      t.Object({
+        allowDownload: t.Optional(t.Boolean()),
+      }),
+    ),
   }),
 ]);
 export type IEntity = UnwrapSchema<typeof IEntity>;
@@ -422,21 +439,41 @@ export const IUserData = t.Object({
   strategy: t.String(),
   sessionID: t.Optional(t.String()),
   data: t.Object({
-    [CollectionEnumSchema.address]: t.Optional(t.Array(t.Union([IAddress, IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.annotation]: t.Optional(t.Array(t.Union([IAnnotation, IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.compilation]: t.Optional(t.Array(t.Union([ICompilation, IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.contact]: t.Optional(t.Array(t.Union([IContact, IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.digitalentity]: t.Optional(t.Array(t.Union([IDigitalEntity, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.address]: t.Optional(
+      t.Array(t.Union([IAddress, IDocument, t.String(), t.Null()])),
+    ),
+    [CollectionEnumSchema.annotation]: t.Optional(
+      t.Array(t.Union([IAnnotation, IDocument, t.String(), t.Null()])),
+    ),
+    [CollectionEnumSchema.compilation]: t.Optional(
+      t.Array(t.Union([ICompilation, IDocument, t.String(), t.Null()])),
+    ),
+    [CollectionEnumSchema.contact]: t.Optional(
+      t.Array(t.Union([IContact, IDocument, t.String(), t.Null()])),
+    ),
+    [CollectionEnumSchema.digitalentity]: t.Optional(
+      t.Array(t.Union([IDigitalEntity, IDocument, t.String(), t.Null()])),
+    ),
     [CollectionEnumSchema.entity]: t.Optional(t.Array(t.Union([IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.institution]: t.Optional(t.Array(t.Union([IInstitution, IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.person]: t.Optional(t.Array(t.Union([IPerson, IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.physicalentity]: t.Optional(t.Array(t.Union([IPhysicalEntity, IDocument, t.String(), t.Null()]))),
-    [CollectionEnumSchema.tag]: t.Optional(t.Array(t.Union([ITag, IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.institution]: t.Optional(
+      t.Array(t.Union([IInstitution, IDocument, t.String(), t.Null()])),
+    ),
+    [CollectionEnumSchema.person]: t.Optional(
+      t.Array(t.Union([IPerson, IDocument, t.String(), t.Null()])),
+    ),
+    [CollectionEnumSchema.physicalentity]: t.Optional(
+      t.Array(t.Union([IPhysicalEntity, IDocument, t.String(), t.Null()])),
+    ),
+    [CollectionEnumSchema.tag]: t.Optional(
+      t.Array(t.Union([ITag, IDocument, t.String(), t.Null()])),
+    ),
   }),
-  profiles: t.Array(t.Object({
-    type: ProfileTypeEnumSchema,
-    profileId: t.String(),
-  })),
+  profiles: t.Array(
+    t.Object({
+      type: ProfileTypeEnumSchema,
+      profileId: t.String(),
+    }),
+  ),
 });
 export type IUserData = UnwrapSchema<typeof IUserData>;
 
@@ -451,9 +488,12 @@ export const IPublicProfile = t.Intersect([
     description: t.Optional(t.String()),
     displayName: t.Optional(t.String()),
     location: t.Optional(t.String()),
-    socials: t.Object({
-      website: t.Optional(t.String()),
-    }, { additionalProperties: t.Optional(t.String()) }),
+    socials: t.Object(
+      {
+        website: t.Optional(t.String()),
+      },
+      { additionalProperties: t.Optional(t.String()) },
+    ),
   }),
   t.Object({
     __hits: t.Optional(t.Number()),
