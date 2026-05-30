@@ -1,4 +1,4 @@
-import { t, UnwrapSchema } from 'elysia';
+import { t, type UnwrapSchema } from 'elysia';
 
 // # Enums
 // These don't need to use UnwrapSchema, as they're real enums are generated using the `generate-enums.ts` script.
