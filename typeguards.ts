@@ -12,7 +12,7 @@ import type {
   IPhysicalEntity,
   IPublicProfile,
   ITag,
-} from './interfaces';
+} from './schemas';
 
 const isDefined = (value: any) => value != null && value != undefined;
 

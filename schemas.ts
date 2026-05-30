@@ -60,6 +60,9 @@ export const IDescriptionValueTuple = t.Object({
 });
 export type IDescriptionValueTuple = UnwrapSchema<typeof IDescriptionValueTuple>;
 
+export const DataTuple = t.Union([ITypeValueTuple, IDimensionTuple, ICreationTuple, IDescriptionValueTuple]);
+export type DataTuple = UnwrapSchema<typeof DataTuple>;
+
 export const IAddress = t.Object({
   _id: t.String(),
   building: t.String(),
@@ -436,6 +439,9 @@ export const IUserData = t.Object({
   })),
 });
 export type IUserData = UnwrapSchema<typeof IUserData>;
+
+export const IUserDataWithoutData = t.Omit(IUserData, ['data']);
+export type IUserDataWithoutData = UnwrapSchema<typeof IUserDataWithoutData>;
 
 export const IPublicProfile = t.Intersect([
   t.Object({

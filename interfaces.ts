@@ -7,6 +7,7 @@ import type {
   IContact,
   ICreationTuple,
   IDescriptionValueTuple,
+  DataTuple,
   IDigitalEntity,
   IDimensionTuple,
   IDocument,
@@ -15,13 +16,7 @@ import type {
   IPerson,
   IPhysicalEntity,
   ITag,
-  IUserData,
-  ITypeValueTuple,
 } from './schemas';
-
-export type IUserDataWithoutData = Omit<IUserData, 'data'>;
-
-export type DataTuple = ITypeValueTuple | IDimensionTuple | ICreationTuple | IDescriptionValueTuple;
 
 export type UserDataCollectionDocumentType<C extends Collection> = C extends Collection.address
   ? IAddress
