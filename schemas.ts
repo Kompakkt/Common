@@ -3,79 +3,120 @@ import { t, type UnwrapSchema } from 'elysia';
 // # Enums
 // These don't need to use UnwrapSchema, as they're real enums are generated using the `generate-enums.ts` script.
 
-export const UserRankEnumSchema = t.UnionEnum(['uploader', 'admin']);
-export const CollectionEnumSchema = t.UnionEnum([
-  'address',
-  'annotation',
-  'compilation',
-  'contact',
-  'digitalentity',
-  'entity',
-  'institution',
-  'person',
-  'physicalentity',
-  'tag',
-]);
-
-export const EntityAccessRoleEnumSchema = t.UnionEnum(['owner', 'editor', 'viewer']);
-export const ProfileTypeEnumSchema = t.UnionEnum(['user', 'organization']);
-
-export const IDocument = t.Object({
-  _id: t.String(),
+export const UserRankEnumSchema = t.UnionEnum(['uploader', 'admin'], {
+  description: 'Defines the rank of a user, which can be either "uploader" or "admin".',
+  default: 'uploader',
 });
-export type IDocument = UnwrapSchema<typeof IDocument>;
+export const CollectionEnumSchema = t.UnionEnum(
+  [
+    'address',
+    'annotation',
+    'compilation',
+    'contact',
+    'digitalentity',
+    'entity',
+    'institution',
+    'person',
+    'physicalentity',
+    'tag',
+  ],
+  {
+    description: 'Defines the different database collections.',
+  },
+);
 
-export const ISortable = t.Object({
-  __hits: t.Number(),
-  __createdAt: t.Number(),
-  __annotationCount: t.Number(),
-  __normalizedName: t.String(),
+export const EntityAccessRoleEnumSchema = t.UnionEnum(['owner', 'editor', 'viewer'], {
+  description:
+    'Defines the access role for e.g. objects (internally entities) or collections (internally compilations), which can be "owner", "editor", or "viewer".',
 });
-export type ISortable = UnwrapSchema<typeof ISortable>;
-
-export const IFilterable = t.Object({
-  __licenses: t.Array(t.String()),
-  __mediaTypes: t.Array(t.String()),
-  __downloadable: t.Boolean(),
+export const ProfileTypeEnumSchema = t.UnionEnum(['user', 'organization'], {
+  description: 'Defines the type of a profile, which can be either "user" or "organization".',
 });
-export type IFilterable = UnwrapSchema<typeof IFilterable>;
 
-export const ITypeValueTuple = t.Object({
-  type: t.String(),
-  value: t.String(),
+export const IDocumentSchema = t.Object(
+  {
+    _id: t.String(),
+  },
+  {
+    description:
+      'A reference to a document in the database, containing only the _id field. Provided as bson by MongoDB',
+  },
+);
+export type IDocument = UnwrapSchema<typeof IDocumentSchema>;
+
+export const ISortableSchema = t.Object({
+  __hits: t.Number({
+    description:
+      'Number of search hits for this item, used for sorting by relevance. Not indicative of unique hits, as the value decreases overtime for weighting relevant items.',
+  }),
+  __createdAt: t.Number({
+    description: 'Creation timestamp of the item, used for sorting by creation date.',
+  }),
+  __annotationCount: t.Number({
+    description:
+      'Number of annotations associated with the item, used for sorting by annotation count.',
+  }),
+  __normalizedName: t.String({
+    description: 'Normalized name of the item, used for sorting by name.',
+  }),
 });
-export type ITypeValueTuple = UnwrapSchema<typeof ITypeValueTuple>;
+export type ISortable = UnwrapSchema<typeof ISortableSchema>;
 
-export const IDimensionTuple = t.Object({
+export const IFilterableSchema = t.Object({
+  __licenses: t.Array(t.String(), {
+    description: 'List of licenses associated with the item, used for filtering by license.',
+  }),
+  __mediaTypes: t.Array(t.String(), {
+    description: 'List of media types associated with the item, used for filtering by media type.',
+  }),
+  __downloadable: t.Boolean({
+    description:
+      'Indicates whether the item is downloadable, used for filtering by downloadability.',
+  }),
+});
+export type IFilterable = UnwrapSchema<typeof IFilterableSchema>;
+
+export const ITypeValueTupleSchema = t.Object(
+  {
+    type: t.String(),
+    value: t.String(),
+  },
+  {
+    description: 'Generic type for any metadata saved as a type-value pair',
+  },
+);
+export type ITypeValueTuple = UnwrapSchema<typeof ITypeValueTupleSchema>;
+
+export const IDimensionTupleSchema = t.Object({
   type: t.String(),
   value: t.String(),
   name: t.String(),
 });
-export type IDimensionTuple = UnwrapSchema<typeof IDimensionTuple>;
+export type IDimensionTuple = UnwrapSchema<typeof IDimensionTupleSchema>;
 
-export const ICreationTuple = t.Object({
+export const ICreationTupleSchema = t.Object({
   technique: t.String(),
   program: t.String(),
   equipment: t.String(),
   date: t.String(),
 });
-export type ICreationTuple = UnwrapSchema<typeof ICreationTuple>;
+export type ICreationTuple = UnwrapSchema<typeof ICreationTupleSchema>;
 
-export const IDescriptionValueTuple = t.Object({
+export const IDescriptionValueTupleSchema = t.Object({
   description: t.String(),
   value: t.String(),
 });
-export type IDescriptionValueTuple = UnwrapSchema<typeof IDescriptionValueTuple>;
+export type IDescriptionValueTuple = UnwrapSchema<typeof IDescriptionValueTupleSchema>;
 
-export const DataTuple = t.Union([
-  ITypeValueTuple,
-  IDimensionTuple,
-  ICreationTuple,
-  IDescriptionValueTuple,
+export const DataTupleSchema = t.Union([
+  ITypeValueTupleSchema,
+  IDimensionTupleSchema,
+  ICreationTupleSchema,
+  IDescriptionValueTupleSchema,
 ]);
-export type DataTuple = UnwrapSchema<typeof DataTuple>;
+export type DataTuple = UnwrapSchema<typeof DataTupleSchema>;
 
-export const IAddress = t.Object({
+export const IAddressSchema = t.Object({
   _id: t.String(),
   building: t.String(),
   number: t.String(),
@@ -85,354 +126,354 @@ export const IAddress = t.Object({
   country: t.String(),
   creation_date: t.Number(),
 });
-export type IAddress = UnwrapSchema<typeof IAddress>;
+export type IAddress = UnwrapSchema<typeof IAddressSchema>;
 
-export const IContact = t.Object({
+export const IContactSchema = t.Object({
   _id: t.String(),
   mail: t.String(),
   phonenumber: t.String(),
   note: t.String(),
   creation_date: t.Number(),
 });
-export type IContact = UnwrapSchema<typeof IContact>;
+export type IContact = UnwrapSchema<typeof IContactSchema>;
 
-export const ITag = t.Object({
+export const ITagSchema = t.Object({
   _id: t.String(),
   value: t.String(),
 });
-export type ITag = UnwrapSchema<typeof ITag>;
+export type ITag = UnwrapSchema<typeof ITagSchema>;
 
-export const IStrippedUserData = t.Object({
+export const IStrippedUserDataSchema = t.Object({
   _id: t.String(),
   fullname: t.String(),
   username: t.String(),
 });
-export type IStrippedUserData = UnwrapSchema<typeof IStrippedUserData>;
+export type IStrippedUserData = UnwrapSchema<typeof IStrippedUserDataSchema>;
 
-export const ProfileReference = t.Object({
+export const ProfileReferenceSchema = t.Object({
   profileId: t.String(),
   type: ProfileTypeEnumSchema,
 });
-export type ProfileReference = UnwrapSchema<typeof ProfileReference>;
+export type ProfileReference = UnwrapSchema<typeof ProfileReferenceSchema>;
 
-export const AccessFieldEntry = t.Intersect([
-  IStrippedUserData,
+export const AccessFieldEntrySchema = t.Intersect([
+  IStrippedUserDataSchema,
   t.Object({
     role: EntityAccessRoleEnumSchema,
-    profile: ProfileReference,
+    profile: ProfileReferenceSchema,
   }),
 ]);
-export type AccessFieldEntry = UnwrapSchema<typeof AccessFieldEntry>;
+export type AccessFieldEntry = UnwrapSchema<typeof AccessFieldEntrySchema>;
 
-export const AccessField = t.Array(AccessFieldEntry);
-export type AccessField = UnwrapSchema<typeof AccessField>;
+export const AccessFieldSchema = t.Array(AccessFieldEntrySchema);
+export type AccessField = UnwrapSchema<typeof AccessFieldSchema>;
 
-export const CreatorField = t.Intersect([
-  IStrippedUserData,
+export const CreatorFieldSchema = t.Intersect([
+  IStrippedUserDataSchema,
   t.Object({
-    profile: ProfileReference,
+    profile: ProfileReferenceSchema,
   }),
 ]);
-export type CreatorField = UnwrapSchema<typeof CreatorField>;
+export type CreatorField = UnwrapSchema<typeof CreatorFieldSchema>;
 
-export const IVector3 = t.Object({
+export const IVector3Schema = t.Object({
   x: t.Number(),
   y: t.Number(),
   z: t.Number(),
 });
-export type IVector3 = UnwrapSchema<typeof IVector3>;
+export type IVector3 = UnwrapSchema<typeof IVector3Schema>;
 
-export const IAmbiguousVector3 = t.Union([
-  IVector3,
+export const IAmbiguousVector3Schema = t.Union([
+  IVector3Schema,
   t.Object({
     _x: t.Number(),
     _y: t.Number(),
     _z: t.Number(),
   }),
 ]);
-export type IAmbiguousVector3 = UnwrapSchema<typeof IAmbiguousVector3>;
+export type IAmbiguousVector3 = UnwrapSchema<typeof IAmbiguousVector3Schema>;
 
-export const IFile = t.Object({
+export const IFileSchema = t.Object({
   file_name: t.String(),
   file_link: t.String(),
   file_size: t.Number(),
   file_format: t.String(),
 });
-export type IFile = UnwrapSchema<typeof IFile>;
+export type IFile = UnwrapSchema<typeof IFileSchema>;
 
-export const IColor = t.Object({
+export const IColorSchema = t.Object({
   r: t.Number(),
   b: t.Number(),
   g: t.Number(),
   a: t.Number(),
 });
-export type IColor = UnwrapSchema<typeof IColor>;
+export type IColor = UnwrapSchema<typeof IColorSchema>;
 
-export const IPosition = t.Object({
+export const IPositionSchema = t.Object({
   x: t.Number(),
   y: t.Number(),
   z: t.Number(),
 });
-export type IPosition = UnwrapSchema<typeof IPosition>;
+export type IPosition = UnwrapSchema<typeof IPositionSchema>;
 
-export const IEntityLight = t.Object({
+export const IEntityLightSchema = t.Object({
   type: t.String(),
-  position: IPosition,
+  position: IPositionSchema,
   intensity: t.Number(),
 });
-export type IEntityLight = UnwrapSchema<typeof IEntityLight>;
+export type IEntityLight = UnwrapSchema<typeof IEntityLightSchema>;
 
-export const IEntitySettings = t.Object({
-  position: t.Optional(IPosition),
+export const IEntitySettingsSchema = t.Object({
+  position: t.Optional(IPositionSchema),
   preview: t.String(),
   previewVideo: t.Optional(t.String()),
   cameraPositionInitial: t.Object({
-    position: IPosition,
-    target: IPosition,
+    position: IPositionSchema,
+    target: IPositionSchema,
   }),
   background: t.Object({
-    color: IColor,
+    color: IColorSchema,
     effect: t.Boolean(),
   }),
-  lights: t.Array(IEntityLight),
-  rotation: IPosition,
-  scale: IPosition,
-  translate: t.Optional(IPosition),
+  lights: t.Array(IEntityLightSchema),
+  rotation: IPositionSchema,
+  scale: IPositionSchema,
+  translate: t.Optional(IPositionSchema),
 });
-export type IEntitySettings = UnwrapSchema<typeof IEntitySettings>;
+export type IEntitySettings = UnwrapSchema<typeof IEntitySettingsSchema>;
 
-export const IAgent = t.Object({
+export const IAgentSchema = t.Object({
   _id: t.String(),
   type: t.String(),
   name: t.String(),
   homepage: t.Optional(t.String()),
 });
-export type IAgent = UnwrapSchema<typeof IAgent>;
+export type IAgent = UnwrapSchema<typeof IAgentSchema>;
 
-export const ICameraPerspective = t.Object({
+export const ICameraPerspectiveSchema = t.Object({
   cameraType: t.String(),
-  position: IAmbiguousVector3,
-  target: IAmbiguousVector3,
+  position: IAmbiguousVector3Schema,
+  target: IAmbiguousVector3Schema,
   preview: t.String(),
 });
-export type ICameraPerspective = UnwrapSchema<typeof ICameraPerspective>;
+export type ICameraPerspective = UnwrapSchema<typeof ICameraPerspectiveSchema>;
 
-export const IContent = t.Object(
+export const IContentSchema = t.Object(
   {
     type: t.String(),
     title: t.String(),
     description: t.String(),
     link: t.Optional(t.String()),
-    relatedPerspective: ICameraPerspective,
+    relatedPerspective: ICameraPerspectiveSchema,
   },
   { additionalProperties: true },
 );
-export type IContent = UnwrapSchema<typeof IContent>;
+export type IContent = UnwrapSchema<typeof IContentSchema>;
 
-export const IBody = t.Object({
+export const IBodySchema = t.Object({
   type: t.String(),
-  content: IContent,
+  content: IContentSchema,
 });
-export type IBody = UnwrapSchema<typeof IBody>;
+export type IBody = UnwrapSchema<typeof IBodySchema>;
 
-export const ISource = t.Object({
+export const ISourceSchema = t.Object({
   link: t.Optional(t.String()),
   relatedEntity: t.String(),
   relatedCompilation: t.Optional(t.String()),
 });
-export type ISource = UnwrapSchema<typeof ISource>;
+export type ISource = UnwrapSchema<typeof ISourceSchema>;
 
-export const ISelector = t.Object({
-  referencePoint: IAmbiguousVector3,
-  referenceNormal: IAmbiguousVector3,
+export const ISelectorSchema = t.Object({
+  referencePoint: IAmbiguousVector3Schema,
+  referenceNormal: IAmbiguousVector3Schema,
 });
-export type ISelector = UnwrapSchema<typeof ISelector>;
+export type ISelector = UnwrapSchema<typeof ISelectorSchema>;
 
-export const ITarget = t.Object({
-  source: ISource,
-  selector: ISelector,
+export const ITargetSchema = t.Object({
+  source: ISourceSchema,
+  selector: ISelectorSchema,
 });
-export type ITarget = UnwrapSchema<typeof ITarget>;
+export type ITarget = UnwrapSchema<typeof ITargetSchema>;
 
-export const IAnnotation = t.Object({
+export const IAnnotationSchema = t.Object({
   _id: t.String(),
   validated: t.Boolean(),
   identifier: t.String(),
   ranking: t.Number(),
-  creator: IAgent,
+  creator: IAgentSchema,
   created: t.String(),
-  generator: IAgent,
+  generator: IAgentSchema,
   generated: t.Optional(t.String()),
   motivation: t.String(),
   lastModificationDate: t.Optional(t.String()),
-  lastModifiedBy: IAgent,
+  lastModifiedBy: IAgentSchema,
   positionXOnView: t.Optional(t.Number()),
   positionYOnView: t.Optional(t.Number()),
-  body: IBody,
-  target: ITarget,
+  body: IBodySchema,
+  target: ITargetSchema,
   extensions: t.Optional(t.Record(t.String(), t.Any())),
 });
-export type IAnnotation = UnwrapSchema<typeof IAnnotation>;
+export type IAnnotation = UnwrapSchema<typeof IAnnotationSchema>;
 
-export const IWhitelist = t.Object({
+export const IWhitelistSchema = t.Object({
   whitelist: t.Object({
     enabled: t.Boolean(),
-    persons: t.Array(IStrippedUserData),
+    persons: t.Array(IStrippedUserDataSchema),
   }),
 });
-export type IWhitelist = UnwrapSchema<typeof IWhitelist>;
+export type IWhitelist = UnwrapSchema<typeof IWhitelistSchema>;
 
-export const ISizedEvent = t.Object({
+export const ISizedEventSchema = t.Object({
   width: t.Number(),
   height: t.Number(),
 });
-export type ISizedEvent = UnwrapSchema<typeof ISizedEvent>;
+export type ISizedEvent = UnwrapSchema<typeof ISizedEventSchema>;
 
-export const IPlaceTuple = t.Object({
+export const IPlaceTupleSchema = t.Object({
   name: t.String(),
   geopolarea: t.String(),
-  address: IAddress,
+  address: IAddressSchema,
 });
-export type IPlaceTuple = UnwrapSchema<typeof IPlaceTuple>;
+export type IPlaceTuple = UnwrapSchema<typeof IPlaceTupleSchema>;
 
-export const IInstitution = t.Object({
+export const IInstitutionSchema = t.Object({
   _id: t.String(),
   name: t.String(),
   university: t.String(),
   roles: t.Record(t.String(), t.Array(t.String())),
   notes: t.Record(t.String(), t.String()),
-  addresses: t.Record(t.String(), t.Union([IAddress, IDocument])),
+  addresses: t.Record(t.String(), t.Union([IAddressSchema, IDocumentSchema])),
 });
-export type IInstitution = UnwrapSchema<typeof IInstitution>;
+export type IInstitution = UnwrapSchema<typeof IInstitutionSchema>;
 
-export const IInstitutionResolved = t.Intersect([
-  t.Omit(IInstitution, ['addresses']),
+export const IInstitutionResolvedSchema = t.Intersect([
+  t.Omit(IInstitutionSchema, ['addresses']),
   t.Object({
-    addresses: t.Record(t.String(), IAddress),
+    addresses: t.Record(t.String(), IAddressSchema),
   }),
 ]);
-export type IInstitutionResolved = UnwrapSchema<typeof IInstitutionResolved>;
+export type IInstitutionResolved = UnwrapSchema<typeof IInstitutionResolvedSchema>;
 
-export const IPerson = t.Object({
+export const IPersonSchema = t.Object({
   _id: t.String(),
   prename: t.String(),
   name: t.String(),
   roles: t.Record(t.String(), t.Array(t.String())),
-  institutions: t.Record(t.String(), t.Array(t.Union([IInstitution, IDocument]))),
-  contact_references: t.Record(t.String(), t.Union([IContact, IDocument])),
+  institutions: t.Record(t.String(), t.Array(t.Union([IInstitutionSchema, IDocumentSchema]))),
+  contact_references: t.Record(t.String(), t.Union([IContactSchema, IDocumentSchema])),
 });
-export type IPerson = UnwrapSchema<typeof IPerson>;
+export type IPerson = UnwrapSchema<typeof IPersonSchema>;
 
-export const IPersonResolved = t.Intersect([
-  t.Omit(IPerson, ['institutions', 'contact_references']),
+export const IPersonResolvedSchema = t.Intersect([
+  t.Omit(IPersonSchema, ['institutions', 'contact_references']),
   t.Object({
-    institutions: t.Record(t.String(), t.Array(IInstitution)),
-    contact_references: t.Record(t.String(), t.Array(IContact)),
+    institutions: t.Record(t.String(), t.Array(IInstitutionSchema)),
+    contact_references: t.Record(t.String(), t.Array(IContactSchema)),
   }),
 ]);
-export type IPersonResolved = UnwrapSchema<typeof IPersonResolved>;
+export type IPersonResolved = UnwrapSchema<typeof IPersonResolvedSchema>;
 
-export const IBaseEntity = t.Object({
+export const IBaseEntitySchema = t.Object({
   _id: t.String(),
   title: t.String(),
   description: t.String(),
-  externalId: t.Array(ITypeValueTuple),
-  externalLink: t.Array(IDescriptionValueTuple),
-  biblioRefs: t.Array(IDescriptionValueTuple),
-  other: t.Array(IDescriptionValueTuple),
-  persons: t.Array(t.Union([IDocument, t.String(), IPerson])),
-  institutions: t.Array(t.Union([IInstitution, IDocument, t.String()])),
-  metadata_files: t.Array(IFile),
+  externalId: t.Array(ITypeValueTupleSchema),
+  externalLink: t.Array(IDescriptionValueTupleSchema),
+  biblioRefs: t.Array(IDescriptionValueTupleSchema),
+  other: t.Array(IDescriptionValueTupleSchema),
+  persons: t.Array(t.Union([IDocumentSchema, t.String(), IPersonSchema])),
+  institutions: t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String()])),
+  metadata_files: t.Array(IFileSchema),
   extensions: t.Optional(t.Record(t.String(), t.Any())),
 });
-export type IBaseEntity = UnwrapSchema<typeof IBaseEntity>;
+export type IBaseEntity = UnwrapSchema<typeof IBaseEntitySchema>;
 
-export const IBaseEntityResolved = t.Intersect([
-  t.Omit(IBaseEntity, ['persons', 'institutions']),
+export const IBaseEntityResolvedSchema = t.Intersect([
+  t.Omit(IBaseEntitySchema, ['persons', 'institutions']),
   t.Object({
-    persons: t.Array(IPersonResolved),
-    institutions: t.Array(IInstitutionResolved),
+    persons: t.Array(IPersonResolvedSchema),
+    institutions: t.Array(IInstitutionResolvedSchema),
   }),
 ]);
-export type IBaseEntityResolved = UnwrapSchema<typeof IBaseEntityResolved>;
+export type IBaseEntityResolved = UnwrapSchema<typeof IBaseEntityResolvedSchema>;
 
-export const IPhysicalEntity = t.Intersect([
-  IBaseEntity,
+export const IPhysicalEntitySchema = t.Intersect([
+  IBaseEntitySchema,
   t.Object({
-    place: IPlaceTuple,
+    place: IPlaceTupleSchema,
     collection: t.String(),
-    dimensions: t.Array(IDimensionTuple),
+    dimensions: t.Array(IDimensionTupleSchema),
   }),
 ]);
-export type IPhysicalEntity = UnwrapSchema<typeof IPhysicalEntity>;
+export type IPhysicalEntity = UnwrapSchema<typeof IPhysicalEntitySchema>;
 
-export const IPhysicalEntityResolved = t.Intersect([
-  t.Omit(IPhysicalEntity, ['persons', 'institutions']),
-  t.Pick(IBaseEntityResolved, ['persons', 'institutions']),
+export const IPhysicalEntityResolvedSchema = t.Intersect([
+  t.Omit(IPhysicalEntitySchema, ['persons', 'institutions']),
+  t.Pick(IBaseEntityResolvedSchema, ['persons', 'institutions']),
 ]);
-export type IPhysicalEntityResolved = UnwrapSchema<typeof IPhysicalEntityResolved>;
+export type IPhysicalEntityResolved = UnwrapSchema<typeof IPhysicalEntityResolvedSchema>;
 
-export const IDigitalEntity = t.Intersect([
-  IBaseEntity,
+export const IDigitalEntitySchema = t.Intersect([
+  IBaseEntitySchema,
   t.Object({
     type: t.String(),
     licence: t.String(),
     discipline: t.Array(t.String()),
-    tags: t.Array(t.Union([IDocument, ITag])),
-    dimensions: t.Array(IDimensionTuple),
-    creation: t.Array(ICreationTuple),
-    files: t.Array(IFile),
+    tags: t.Array(t.Union([IDocumentSchema, ITagSchema])),
+    dimensions: t.Array(IDimensionTupleSchema),
+    creation: t.Array(ICreationTupleSchema),
+    files: t.Array(IFileSchema),
     statement: t.String(),
     objecttype: t.String(),
-    phyObjs: t.Array(t.Union([IDocument, IPhysicalEntity])),
+    phyObjs: t.Array(t.Union([IDocumentSchema, IPhysicalEntitySchema])),
   }),
 ]);
-export type IDigitalEntity = UnwrapSchema<typeof IDigitalEntity>;
+export type IDigitalEntity = UnwrapSchema<typeof IDigitalEntitySchema>;
 
-export const IDigitalEntityResolved = t.Intersect([
-  t.Omit(IDigitalEntity, ['persons', 'institutions', 'tags', 'phyObjs']),
-  t.Pick(IBaseEntityResolved, ['persons', 'institutions']),
+export const IDigitalEntityResolvedSchema = t.Intersect([
+  t.Omit(IDigitalEntitySchema, ['persons', 'institutions', 'tags', 'phyObjs']),
+  t.Pick(IBaseEntityResolvedSchema, ['persons', 'institutions']),
   t.Object({
-    tags: t.Array(ITag),
-    phyObjs: t.Array(IPhysicalEntityResolved),
+    tags: t.Array(ITagSchema),
+    phyObjs: t.Array(IPhysicalEntityResolvedSchema),
   }),
 ]);
-export type IDigitalEntityResolved = UnwrapSchema<typeof IDigitalEntityResolved>;
+export type IDigitalEntityResolved = UnwrapSchema<typeof IDigitalEntityResolvedSchema>;
 
-export const IAnnotationList = t.Object({
-  annotations: t.Record(t.String(), t.Union([IAnnotation, IDocument])),
+export const IAnnotationListSchema = t.Object({
+  annotations: t.Record(t.String(), t.Union([IAnnotationSchema, IDocumentSchema])),
 });
-export type IAnnotationList = UnwrapSchema<typeof IAnnotationList>;
+export type IAnnotationList = UnwrapSchema<typeof IAnnotationListSchema>;
 
-export const IAnnotationListResolved = t.Object({
-  annotations: t.Record(t.String(), IAnnotation),
+export const IAnnotationListResolvedSchema = t.Object({
+  annotations: t.Record(t.String(), IAnnotationSchema),
 });
-export type IAnnotationListResolved = UnwrapSchema<typeof IAnnotationListResolved>;
+export type IAnnotationListResolved = UnwrapSchema<typeof IAnnotationListResolvedSchema>;
 
-const IEntityPartialSortable = t.Object({
+const IEntityPartialSortableSchema = t.Object({
   __hits: t.Optional(t.Number()),
   __createdAt: t.Optional(t.Number()),
   __annotationCount: t.Optional(t.Number()),
   __normalizedName: t.Optional(t.String()),
 });
 
-const IEntityPartialFilterable = t.Object({
+const IEntityPartialFilterableSchema = t.Object({
   __licenses: t.Optional(t.Array(t.String())),
   __mediaTypes: t.Optional(t.Array(t.String())),
   __downloadable: t.Optional(t.Boolean()),
 });
 
-export const IEntity = t.Intersect([
-  IAnnotationList,
-  IEntityPartialSortable,
-  IEntityPartialFilterable,
-  IDocument,
+export const IEntitySchema = t.Intersect([
+  IAnnotationListSchema,
+  IEntityPartialSortableSchema,
+  IEntityPartialFilterableSchema,
+  IDocumentSchema,
   t.Object({
     name: t.String(),
-    files: t.Array(IFile),
+    files: t.Array(IFileSchema),
     externalFile: t.Optional(t.String()),
-    relatedDigitalEntity: t.Union([IDocument, IDigitalEntity]),
-    creator: CreatorField,
+    relatedDigitalEntity: t.Union([IDocumentSchema, IDigitalEntitySchema]),
+    creator: CreatorFieldSchema,
     online: t.Boolean(),
     finished: t.Boolean(),
     mediaType: t.String(),
@@ -446,9 +487,9 @@ export const IEntity = t.Intersect([
       high: t.String(),
       raw: t.String(),
     }),
-    settings: IEntitySettings,
+    settings: IEntitySettingsSchema,
     extensions: t.Optional(t.Record(t.String(), t.Any())),
-    access: AccessField,
+    access: AccessFieldSchema,
     options: t.Optional(
       t.Object({
         allowDownload: t.Optional(t.Boolean()),
@@ -456,60 +497,60 @@ export const IEntity = t.Intersect([
     ),
   }),
 ]);
-export type IEntity = UnwrapSchema<typeof IEntity>;
+export type IEntity = UnwrapSchema<typeof IEntitySchema>;
 
-export const IEntityResolved = t.Intersect([
-  t.Omit(IEntity, ['relatedDigitalEntity']),
-  t.Object({ relatedDigitalEntity: IDigitalEntityResolved }),
+export const IEntityResolvedSchema = t.Intersect([
+  t.Omit(IEntitySchema, ['relatedDigitalEntity']),
+  t.Object({ relatedDigitalEntity: IDigitalEntityResolvedSchema }),
 ]);
-export type IEntityResolved = UnwrapSchema<typeof IEntityResolved>;
+export type IEntityResolved = UnwrapSchema<typeof IEntityResolvedSchema>;
 
-export const IEntityResolvedOnlyDigitalEntity = t.Intersect([
-  t.Omit(IEntity, ['relatedDigitalEntity']),
-  t.Object({ relatedDigitalEntity: IDigitalEntity }),
+export const IEntityResolvedOnlyDigitalEntitySchema = t.Intersect([
+  t.Omit(IEntitySchema, ['relatedDigitalEntity']),
+  t.Object({ relatedDigitalEntity: IDigitalEntitySchema }),
 ]);
 export type IEntityResolvedOnlyDigitalEntity = UnwrapSchema<
-  typeof IEntityResolvedOnlyDigitalEntity
+  typeof IEntityResolvedOnlyDigitalEntitySchema
 >;
 
-export const ICompilation = t.Intersect([
-  IAnnotationList,
-  IEntityPartialSortable,
-  IEntityPartialFilterable,
-  IDocument,
+export const ICompilationSchema = t.Intersect([
+  IAnnotationListSchema,
+  IEntityPartialSortableSchema,
+  IEntityPartialFilterableSchema,
+  IDocumentSchema,
   t.Object({
     name: t.String(),
     description: t.String(),
-    creator: CreatorField,
-    entities: t.Record(t.String(), t.Union([IDocument, IEntity])),
-    access: AccessField,
+    creator: CreatorFieldSchema,
+    entities: t.Record(t.String(), t.Union([IDocumentSchema, IEntitySchema])),
+    access: AccessFieldSchema,
     online: t.Optional(t.Boolean()),
     password: t.Optional(t.Union([t.String(), t.Boolean()])),
   }),
 ]);
-export type ICompilation = UnwrapSchema<typeof ICompilation>;
+export type ICompilation = UnwrapSchema<typeof ICompilationSchema>;
 
-export const ICompilationResolved = t.Intersect([
-  t.Omit(ICompilation, ['entities', 'annotations']),
+export const ICompilationResolvedSchema = t.Intersect([
+  t.Omit(ICompilationSchema, ['entities', 'annotations']),
   t.Object({
-    annotations: IAnnotationListResolved,
-    entities: t.Record(t.String(), IEntityResolved),
+    annotations: IAnnotationListResolvedSchema,
+    entities: t.Record(t.String(), IEntityResolvedSchema),
   }),
 ]);
-export type ICompilationResolved = UnwrapSchema<typeof ICompilationResolved>;
+export type ICompilationResolved = UnwrapSchema<typeof ICompilationResolvedSchema>;
 
-export const ICompilationResolvedOnlyEntities = t.Intersect([
-  t.Omit(ICompilation, ['entities', 'annotations']),
+export const ICompilationResolvedOnlyEntitiesSchema = t.Intersect([
+  t.Omit(ICompilationSchema, ['entities', 'annotations']),
   t.Object({
-    annotations: IAnnotationList,
-    entities: t.Record(t.String(), IEntity),
+    annotations: IAnnotationListSchema,
+    entities: t.Record(t.String(), IEntitySchema),
   }),
 ]);
 export type ICompilationResolvedOnlyEntities = UnwrapSchema<
-  typeof ICompilationResolvedOnlyEntities
+  typeof ICompilationResolvedOnlyEntitiesSchema
 >;
 
-export const IUserData = t.Object({
+export const IUserDataSchema = t.Object({
   _id: t.String(),
   username: t.String(),
   fullname: t.String(),
@@ -521,32 +562,34 @@ export const IUserData = t.Object({
   sessionID: t.Optional(t.String()),
   data: t.Object({
     [CollectionEnumSchema.enum[0]]: t.Optional(
-      t.Array(t.Union([IAddress, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([IAddressSchema, IDocumentSchema, t.String(), t.Null()])),
     ),
     [CollectionEnumSchema.enum[1]]: t.Optional(
-      t.Array(t.Union([IAnnotation, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([IAnnotationSchema, IDocumentSchema, t.String(), t.Null()])),
     ),
     [CollectionEnumSchema.enum[2]]: t.Optional(
-      t.Array(t.Union([ICompilation, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([ICompilationSchema, IDocumentSchema, t.String(), t.Null()])),
     ),
     [CollectionEnumSchema.enum[3]]: t.Optional(
-      t.Array(t.Union([IContact, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([IContactSchema, IDocumentSchema, t.String(), t.Null()])),
     ),
     [CollectionEnumSchema.enum[4]]: t.Optional(
-      t.Array(t.Union([IDigitalEntity, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([IDigitalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
     ),
-    [CollectionEnumSchema.enum[5]]: t.Optional(t.Array(t.Union([IDocument, t.String(), t.Null()]))),
+    [CollectionEnumSchema.enum[5]]: t.Optional(
+      t.Array(t.Union([IDocumentSchema, t.String(), t.Null()])),
+    ),
     [CollectionEnumSchema.enum[6]]: t.Optional(
-      t.Array(t.Union([IInstitution, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String(), t.Null()])),
     ),
     [CollectionEnumSchema.enum[7]]: t.Optional(
-      t.Array(t.Union([IPerson, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([IPersonSchema, IDocumentSchema, t.String(), t.Null()])),
     ),
     [CollectionEnumSchema.enum[8]]: t.Optional(
-      t.Array(t.Union([IPhysicalEntity, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([IPhysicalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
     ),
     [CollectionEnumSchema.enum[9]]: t.Optional(
-      t.Array(t.Union([ITag, IDocument, t.String(), t.Null()])),
+      t.Array(t.Union([ITagSchema, IDocumentSchema, t.String(), t.Null()])),
     ),
   }),
   profiles: t.Array(
@@ -556,12 +599,12 @@ export const IUserData = t.Object({
     }),
   ),
 });
-export type IUserData = UnwrapSchema<typeof IUserData>;
+export type IUserData = UnwrapSchema<typeof IUserDataSchema>;
 
-export const IUserDataWithoutData = t.Omit(IUserData, ['data']);
-export type IUserDataWithoutData = UnwrapSchema<typeof IUserDataWithoutData>;
+export const IUserDataWithoutDataSchema = t.Omit(IUserDataSchema, ['data']);
+export type IUserDataWithoutData = UnwrapSchema<typeof IUserDataWithoutDataSchema>;
 
-export const IPublicProfile = t.Intersect([
+export const IPublicProfileSchema = t.Intersect([
   t.Object({
     _id: t.String(),
     type: ProfileTypeEnumSchema,
@@ -586,4 +629,4 @@ export const IPublicProfile = t.Intersect([
     __downloadable: t.Optional(t.Boolean()),
   }),
 ]);
-export type IPublicProfile = UnwrapSchema<typeof IPublicProfile>;
+export type IPublicProfile = UnwrapSchema<typeof IPublicProfileSchema>;
