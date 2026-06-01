@@ -721,10 +721,8 @@ export type IEntity = UnwrapSchema<typeof IEntitySchema>;
 export const IEntityResolvedSchema = t.Intersect(
   [
     t.Omit(IEntitySchema, ['relatedDigitalEntity', 'annotations']),
-    t.Object({
-      relatedDigitalEntity: IDigitalEntityResolvedSchema,
-      annotations: IAnnotationListResolvedSchema,
-    }),
+    t.Object({ relatedDigitalEntity: IDigitalEntityResolvedSchema }),
+    IAnnotationListResolvedSchema,
   ],
   {
     description:
@@ -736,10 +734,8 @@ export type IEntityResolved = UnwrapSchema<typeof IEntityResolvedSchema>;
 export const IEntityResolvedOnlyDigitalEntitySchema = t.Intersect(
   [
     t.Omit(IEntitySchema, ['relatedDigitalEntity', 'annotations']),
-    t.Object({
-      relatedDigitalEntity: IDigitalEntitySchema,
-      annotations: IAnnotationListResolvedSchema,
-    }),
+    t.Object({ relatedDigitalEntity: IDigitalEntitySchema }),
+    IAnnotationListResolvedSchema,
   ],
   {
     description:
@@ -777,9 +773,9 @@ export const ICompilationResolvedSchema = t.Intersect(
   [
     t.Omit(ICompilationSchema, ['entities', 'annotations']),
     t.Object({
-      annotations: IAnnotationListResolvedSchema,
       entities: t.Record(t.String(), IEntityResolvedSchema),
     }),
+    IAnnotationListResolvedSchema,
   ],
   {
     description:
@@ -791,10 +787,8 @@ export type ICompilationResolved = UnwrapSchema<typeof ICompilationResolvedSchem
 export const ICompilationResolvedOnlyEntitiesSchema = t.Intersect(
   [
     t.Omit(ICompilationSchema, ['entities', 'annotations']),
-    t.Object({
-      annotations: IAnnotationListResolvedSchema,
-      entities: t.Record(t.String(), IEntityResolvedOnlyDigitalEntitySchema),
-    }),
+    t.Object({ entities: t.Record(t.String(), IEntityResolvedOnlyDigitalEntitySchema) }),
+    IAnnotationListResolvedSchema,
   ],
   {
     description:
