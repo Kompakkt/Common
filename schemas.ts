@@ -32,10 +32,14 @@ export const ProfileTypeEnumSchema = t.UnionEnum(['user', 'organization'], {
   description: 'Defines the type of a profile, which can be either "user" or "organization".',
 });
 
+// _id fields in MongoDB are returned as ObjectId, but the Elysia server transforms them to string _after_ validation, hence, without transformation, the response schema validation fails.
+const IdSchema = t
+  .Transform(t.String())
+  .Decode(v => v?.toString?.() ?? v)
+  .Encode(v => v?.toString?.() ?? v);
+
 export const IDocumentSchema = t.Object(
-  {
-    _id: t.NoValidate(t.String()),
-  },
+  { _id: IdSchema },
   {
     description:
       'A reference to a document in the database, containing only the _id field. Provided as bson by MongoDB',
