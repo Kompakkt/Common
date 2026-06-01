@@ -84,6 +84,11 @@ const META_ENTITY_PROPS = ['title', 'description', 'persons', 'institutions'];
 export const isCompilation = (obj: unknown): obj is ICompilation => checkProps(COMP_PROPS, obj);
 const COMP_PROPS = ['entities', 'name', 'description'];
 
+export const isResolvedCompilation = (obj: unknown): obj is ICompilation => {
+  if (!isCompilation(obj)) return false;
+  return Object.values(obj.entities).every(isResolvedEntity);
+};
+
 /**
  * Checks whether an object is an entity
  * @type {Boolean}
