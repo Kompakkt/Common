@@ -1,4 +1,4 @@
-import type { IAmbiguousVector3, IVector3 } from './interfaces';
+import type { IAmbiguousVector3, IVector3 } from './schemas';
 
 export const asVector3 = (vector: IAmbiguousVector3): IVector3 => {
   if ('_x' in vector) {

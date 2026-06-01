@@ -1,27 +1,3 @@
-/**
- * Describes the different ranks/roles a user can have.
- *
- * This rank/role is bound to the account, but can be changed by an administrator
- *
- * Ranks/Roles:
- * - upload: a registered person with upload permission
- * - admin: site administrators
- *
- * Deprecated Ranks/Roles (since all users are uploader by default now):
- * - user: any registered person
- * - uploadrequested: a registered person that sent an application to gain upload permission
- */
-export enum UserRank {
-  uploader = 'uploader',
-  admin = 'admin',
-}
-
-/**
- * Describes the different types of (document) collections that are used in
- * the MongoDB database.
- *
- * Note: this does not include account related (document) collections.
- */
 export enum Collection {
   address = 'address',
   annotation = 'annotation',
@@ -35,13 +11,30 @@ export enum Collection {
   tag = 'tag',
 }
 
+export const isCollection = (value: unknown): value is Collection =>
+  typeof value === 'string' && Object.values(Collection).includes(value as Collection);
+
 export enum EntityAccessRole {
   owner = 'owner',
   editor = 'editor',
   viewer = 'viewer',
 }
 
+export const isEntityAccessRole = (value: unknown): value is EntityAccessRole =>
+  typeof value === 'string' && Object.values(EntityAccessRole).includes(value as EntityAccessRole);
+
 export enum ProfileType {
   user = 'user',
   organization = 'organization',
 }
+
+export const isProfileType = (value: unknown): value is ProfileType =>
+  typeof value === 'string' && Object.values(ProfileType).includes(value as ProfileType);
+
+export enum UserRank {
+  uploader = 'uploader',
+  admin = 'admin',
+}
+
+export const isUserRank = (value: unknown): value is UserRank =>
+  typeof value === 'string' && Object.values(UserRank).includes(value as UserRank);
