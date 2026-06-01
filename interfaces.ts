@@ -14,24 +14,25 @@ import type {
   ITag,
 } from './schemas';
 
-export type UserDataCollectionDocumentType<C extends Collection> = C extends Collection.address
-  ? IAddress
-  : C extends Collection.annotation
-    ? IAnnotation
-    : C extends Collection.compilation
-      ? ICompilation
-      : C extends Collection.contact
-        ? IContact
-        : C extends Collection.digitalentity
-          ? IDigitalEntity
-          : C extends Collection.entity
-            ? IEntity
-            : C extends Collection.institution
-              ? IInstitution
-              : C extends Collection.person
-                ? IPerson
-                : C extends Collection.physicalentity
-                  ? IPhysicalEntity
-                  : C extends Collection.tag
-                    ? ITag
-                    : IDocument;
+export type UserDataCollectionDocumentType<C extends Collection> =
+  C extends (typeof Collection)['address']
+    ? IAddress
+    : C extends (typeof Collection)['annotation']
+      ? IAnnotation
+      : C extends (typeof Collection)['compilation']
+        ? ICompilation
+        : C extends (typeof Collection)['contact']
+          ? IContact
+          : C extends (typeof Collection)['digitalentity']
+            ? IDigitalEntity
+            : C extends (typeof Collection)['entity']
+              ? IEntity
+              : C extends (typeof Collection)['institution']
+                ? IInstitution
+                : C extends (typeof Collection)['person']
+                  ? IPerson
+                  : C extends (typeof Collection)['physicalentity']
+                    ? IPhysicalEntity
+                    : C extends (typeof Collection)['tag']
+                      ? ITag
+                      : IDocument;
