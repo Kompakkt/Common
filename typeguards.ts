@@ -11,6 +11,8 @@ import type {
   IPerson,
   IPhysicalEntity,
   IPublicProfile,
+  IUserDataWithoutData,
+  IUserData,
   ITag,
 } from './schemas';
 
@@ -155,6 +157,21 @@ const ADDR_PROPS = ['building', 'city', 'country', 'number', 'postcode', 'street
 const isContact = (obj: unknown): obj is IContact => checkProps(CONTACT_PROPS, obj);
 const CONTACT_PROPS = ['mail', 'note', 'phonenumber'];
 
+/**
+ * Checks whether an object is a user data entry
+ * @type {Boolean}
+ */
+const isUserData = (obj: unknown): obj is IUserData => checkProps(USER_DATA_PROPS, obj);
+const USER_DATA_PROPS = ['_id', 'username', 'mail', 'role', 'data'];
+
+/**
+ * Checks whether an object is a user data entry without the data field
+ * @type {Boolean}
+ */
+const isUserDataWithoutData = (obj: unknown): obj is IUserDataWithoutData =>
+  checkProps(USER_DATA_WITHOUT_DATA_PROPS, obj);
+const USER_DATA_WITHOUT_DATA_PROPS = ['_id', 'username', 'mail', 'role'];
+
 const isPublicProfile = (obj: unknown): obj is IPublicProfile => {
   if (!obj || obj === null) return false;
   if (typeof obj !== 'object') return false;
@@ -169,6 +186,7 @@ const isPublicProfile = (obj: unknown): obj is IPublicProfile => {
     'website' in (profile['socials'] as Record<string, unknown>)
   );
 };
+
 
 export {
   areDocumentsEqual,
@@ -189,4 +207,6 @@ export {
   isTag,
   isUnresolved,
   isPublicProfile,
+  isUserData,
+  isUserDataWithoutData,
 };
