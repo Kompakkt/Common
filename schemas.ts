@@ -817,6 +817,26 @@ export type ICompilationResolvedOnlyEntities = UnwrapSchema<
   typeof ICompilationResolvedOnlyEntitiesSchema
 >;
 
+const userDataCollectionEntries = [
+  [CollectionEnumSchema.enum[0], IAddressSchema],
+  [CollectionEnumSchema.enum[1], IAnnotationSchema],
+  [CollectionEnumSchema.enum[2], ICompilationSchema],
+  [CollectionEnumSchema.enum[3], IContactSchema],
+  [CollectionEnumSchema.enum[4], IDigitalEntitySchema],
+  [CollectionEnumSchema.enum[5], IDocumentSchema],
+  [CollectionEnumSchema.enum[6], IInstitutionSchema],
+  [CollectionEnumSchema.enum[7], IPersonSchema],
+  [CollectionEnumSchema.enum[8], IPhysicalEntitySchema],
+  [CollectionEnumSchema.enum[9], ITagSchema],
+] as const;
+
+const userDataFieldShape = Object.fromEntries(
+  userDataCollectionEntries.map(([key, schema]) => [
+    key,
+    t.Optional(t.Array(t.Union([schema, IDocumentSchema, t.String(), t.Null()]))),
+  ]),
+);
+
 export const IUserDataSchema = t.Intersect(
   [
     IDocumentSchema,
@@ -829,38 +849,7 @@ export const IUserDataSchema = t.Intersect(
       role: UserRankEnumSchema,
       strategy: t.String(),
       sessionID: t.Optional(t.String()),
-      data: t.Object({
-        [CollectionEnumSchema.enum[0]]: t.Optional(
-          t.Array(t.Union([IAddressSchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[1]]: t.Optional(
-          t.Array(t.Union([IAnnotationSchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[2]]: t.Optional(
-          t.Array(t.Union([ICompilationSchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[3]]: t.Optional(
-          t.Array(t.Union([IContactSchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[4]]: t.Optional(
-          t.Array(t.Union([IDigitalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[5]]: t.Optional(
-          t.Array(t.Union([IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[6]]: t.Optional(
-          t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[7]]: t.Optional(
-          t.Array(t.Union([IPersonSchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[8]]: t.Optional(
-          t.Array(t.Union([IPhysicalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-        [CollectionEnumSchema.enum[9]]: t.Optional(
-          t.Array(t.Union([ITagSchema, IDocumentSchema, t.String(), t.Null()])),
-        ),
-      }),
+      data: t.Object(userDataFieldShape),
       profiles: t.Array(
         t.Object({
           type: ProfileTypeEnumSchema,
