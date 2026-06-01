@@ -827,7 +827,7 @@ const userDataCollectionEntries = [
   [CollectionEnumSchema.enum[2], ICompilationSchema],
   [CollectionEnumSchema.enum[3], IContactSchema],
   [CollectionEnumSchema.enum[4], IDigitalEntitySchema],
-  [CollectionEnumSchema.enum[5], IDocumentSchema],
+  [CollectionEnumSchema.enum[5], IEntitySchema],
   [CollectionEnumSchema.enum[6], IInstitutionSchema],
   [CollectionEnumSchema.enum[7], IPersonSchema],
   [CollectionEnumSchema.enum[8], IPhysicalEntitySchema],
