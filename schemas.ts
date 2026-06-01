@@ -34,7 +34,7 @@ export const ProfileTypeEnumSchema = t.UnionEnum(['user', 'organization'], {
 
 export const IDocumentSchema = t.Object(
   {
-    _id: t.String(),
+    _id: t.NoValidate(t.String()),
   },
   {
     description:
@@ -135,54 +135,62 @@ export const DataTupleSchema = t.Union(
 );
 export type DataTuple = UnwrapSchema<typeof DataTupleSchema>;
 
-export const IAddressSchema = t.Object(
-  {
-    _id: t.String(),
-    building: t.String(),
-    number: t.String(),
-    street: t.String(),
-    postcode: t.String(),
-    city: t.String(),
-    country: t.String(),
-    creation_date: t.Number(),
-  },
+export const IAddressSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      building: t.String(),
+      number: t.String(),
+      street: t.String(),
+      postcode: t.String(),
+      city: t.String(),
+      country: t.String(),
+      creation_date: t.Number(),
+    }),
+  ],
   {
     description: 'Structured address fields for institutional or geographic location data.',
   },
 );
 export type IAddress = UnwrapSchema<typeof IAddressSchema>;
 
-export const IContactSchema = t.Object(
-  {
-    _id: t.String(),
-    mail: t.String(),
-    phonenumber: t.String(),
-    note: t.String(),
-    creation_date: t.Number(),
-  },
+export const IContactSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      mail: t.String(),
+      phonenumber: t.String(),
+      note: t.String(),
+      creation_date: t.Number(),
+    }),
+  ],
   {
     description: 'Contact information record with email, phone number, and optional notes.',
   },
 );
 export type IContact = UnwrapSchema<typeof IContactSchema>;
 
-export const ITagSchema = t.Object(
-  {
-    _id: t.String(),
-    value: t.String(),
-  },
+export const ITagSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      value: t.String(),
+    }),
+  ],
   {
     description: 'Tag used for categorizing content.',
   },
 );
 export type ITag = UnwrapSchema<typeof ITagSchema>;
 
-export const IStrippedUserDataSchema = t.Object(
-  {
-    _id: t.String(),
-    fullname: t.String(),
-    username: t.String(),
-  },
+export const IStrippedUserDataSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      fullname: t.String(),
+      username: t.String(),
+    }),
+  ],
   {
     description: 'Lightweight user record used when embedding user references in other documents.',
   },
@@ -325,13 +333,15 @@ export const IEntitySettingsSchema = t.Object(
 );
 export type IEntitySettings = UnwrapSchema<typeof IEntitySettingsSchema>;
 
-export const IAgentSchema = t.Object(
-  {
-    _id: t.String(),
-    type: t.String(),
-    name: t.String(),
-    homepage: t.Optional(t.String()),
-  },
+export const IAgentSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      type: t.String(),
+      name: t.String(),
+      homepage: t.Optional(t.String()),
+    }),
+  ],
   {
     description:
       'An agent (person, organization, or software) involved in creating or modifying an annotation.',
@@ -417,25 +427,27 @@ export const ITargetSchema = t.Object(
 );
 export type ITarget = UnwrapSchema<typeof ITargetSchema>;
 
-export const IAnnotationSchema = t.Object(
-  {
-    _id: t.String(),
-    validated: t.Boolean(),
-    identifier: t.String(),
-    ranking: t.Number(),
-    creator: IAgentSchema,
-    created: t.String(),
-    generator: IAgentSchema,
-    generated: t.Optional(t.String()),
-    motivation: t.String(),
-    lastModificationDate: t.Optional(t.String()),
-    lastModifiedBy: IAgentSchema,
-    positionXOnView: t.Optional(t.Number()),
-    positionYOnView: t.Optional(t.Number()),
-    body: IBodySchema,
-    target: ITargetSchema,
-    extensions: t.Optional(t.Record(t.String(), t.Any())),
-  },
+export const IAnnotationSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      validated: t.Boolean(),
+      identifier: t.String(),
+      ranking: t.Number(),
+      creator: IAgentSchema,
+      created: t.String(),
+      generator: IAgentSchema,
+      generated: t.Optional(t.String()),
+      motivation: t.String(),
+      lastModificationDate: t.Optional(t.String()),
+      lastModifiedBy: IAgentSchema,
+      positionXOnView: t.Optional(t.Number()),
+      positionYOnView: t.Optional(t.Number()),
+      body: IBodySchema,
+      target: ITargetSchema,
+      extensions: t.Optional(t.Record(t.String(), t.Any())),
+    }),
+  ],
   {
     description:
       'User-generated annotation linked to a 3D entity, containing content, target selector, and authorship metadata.',
@@ -479,15 +491,17 @@ export const IPlaceTupleSchema = t.Object(
 );
 export type IPlaceTuple = UnwrapSchema<typeof IPlaceTupleSchema>;
 
-export const IInstitutionSchema = t.Object(
-  {
-    _id: t.String(),
-    name: t.String(),
-    university: t.String(),
-    roles: t.Record(t.String(), t.Array(t.String())),
-    notes: t.Record(t.String(), t.String()),
-    addresses: t.Record(t.String(), t.Union([IAddressSchema, IDocumentSchema])),
-  },
+export const IInstitutionSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      name: t.String(),
+      university: t.String(),
+      roles: t.Record(t.String(), t.Array(t.String())),
+      notes: t.Record(t.String(), t.String()),
+      addresses: t.Record(t.String(), t.Union([IAddressSchema, IDocumentSchema])),
+    }),
+  ],
   {
     description: 'Represents an organization or institution linked to persons and entities.',
   },
@@ -507,15 +521,17 @@ export const IInstitutionResolvedSchema = t.Intersect(
 );
 export type IInstitutionResolved = UnwrapSchema<typeof IInstitutionResolvedSchema>;
 
-export const IPersonSchema = t.Object(
-  {
-    _id: t.String(),
-    prename: t.String(),
-    name: t.String(),
-    roles: t.Record(t.String(), t.Array(t.String())),
-    institutions: t.Record(t.String(), t.Array(t.Union([IInstitutionSchema, IDocumentSchema]))),
-    contact_references: t.Record(t.String(), t.Union([IContactSchema, IDocumentSchema])),
-  },
+export const IPersonSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      prename: t.String(),
+      name: t.String(),
+      roles: t.Record(t.String(), t.Array(t.String())),
+      institutions: t.Record(t.String(), t.Array(t.Union([IInstitutionSchema, IDocumentSchema]))),
+      contact_references: t.Record(t.String(), t.Union([IContactSchema, IDocumentSchema])),
+    }),
+  ],
   {
     description:
       'Person record containing name parts, role assignments, institution links, and contact references.',
@@ -538,20 +554,22 @@ export const IPersonResolvedSchema = t.Intersect(
 );
 export type IPersonResolved = UnwrapSchema<typeof IPersonResolvedSchema>;
 
-export const IBaseEntitySchema = t.Object(
-  {
-    _id: t.String(),
-    title: t.String(),
-    description: t.String(),
-    externalId: t.Array(ITypeValueTupleSchema),
-    externalLink: t.Array(IDescriptionValueTupleSchema),
-    biblioRefs: t.Array(IDescriptionValueTupleSchema),
-    other: t.Array(IDescriptionValueTupleSchema),
-    persons: t.Array(t.Union([IDocumentSchema, t.String(), IPersonSchema])),
-    institutions: t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String()])),
-    metadata_files: t.Array(IFileSchema),
-    extensions: t.Optional(t.Record(t.String(), t.Any())),
-  },
+export const IBaseEntitySchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      title: t.String(),
+      description: t.String(),
+      externalId: t.Array(ITypeValueTupleSchema),
+      externalLink: t.Array(IDescriptionValueTupleSchema),
+      biblioRefs: t.Array(IDescriptionValueTupleSchema),
+      other: t.Array(IDescriptionValueTupleSchema),
+      persons: t.Array(t.Union([IDocumentSchema, t.String(), IPersonSchema])),
+      institutions: t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String()])),
+      metadata_files: t.Array(IFileSchema),
+      extensions: t.Optional(t.Record(t.String(), t.Any())),
+    }),
+  ],
   {
     description:
       'Shared foundation for physical and digital entities with core metadata, contributors, and external references.',
@@ -799,56 +817,58 @@ export type ICompilationResolvedOnlyEntities = UnwrapSchema<
   typeof ICompilationResolvedOnlyEntitiesSchema
 >;
 
-export const IUserDataSchema = t.Object(
-  {
-    _id: t.String(),
-    username: t.String(),
-    fullname: t.String(),
-    prename: t.String(),
-    surname: t.String(),
-    mail: t.String(),
-    role: UserRankEnumSchema,
-    strategy: t.String(),
-    sessionID: t.Optional(t.String()),
-    data: t.Object({
-      [CollectionEnumSchema.enum[0]]: t.Optional(
-        t.Array(t.Union([IAddressSchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[1]]: t.Optional(
-        t.Array(t.Union([IAnnotationSchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[2]]: t.Optional(
-        t.Array(t.Union([ICompilationSchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[3]]: t.Optional(
-        t.Array(t.Union([IContactSchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[4]]: t.Optional(
-        t.Array(t.Union([IDigitalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[5]]: t.Optional(
-        t.Array(t.Union([IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[6]]: t.Optional(
-        t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[7]]: t.Optional(
-        t.Array(t.Union([IPersonSchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[8]]: t.Optional(
-        t.Array(t.Union([IPhysicalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
-      ),
-      [CollectionEnumSchema.enum[9]]: t.Optional(
-        t.Array(t.Union([ITagSchema, IDocumentSchema, t.String(), t.Null()])),
+export const IUserDataSchema = t.Intersect(
+  [
+    IDocumentSchema,
+    t.Object({
+      username: t.String(),
+      fullname: t.String(),
+      prename: t.String(),
+      surname: t.String(),
+      mail: t.String(),
+      role: UserRankEnumSchema,
+      strategy: t.String(),
+      sessionID: t.Optional(t.String()),
+      data: t.Object({
+        [CollectionEnumSchema.enum[0]]: t.Optional(
+          t.Array(t.Union([IAddressSchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[1]]: t.Optional(
+          t.Array(t.Union([IAnnotationSchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[2]]: t.Optional(
+          t.Array(t.Union([ICompilationSchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[3]]: t.Optional(
+          t.Array(t.Union([IContactSchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[4]]: t.Optional(
+          t.Array(t.Union([IDigitalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[5]]: t.Optional(
+          t.Array(t.Union([IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[6]]: t.Optional(
+          t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[7]]: t.Optional(
+          t.Array(t.Union([IPersonSchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[8]]: t.Optional(
+          t.Array(t.Union([IPhysicalEntitySchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+        [CollectionEnumSchema.enum[9]]: t.Optional(
+          t.Array(t.Union([ITagSchema, IDocumentSchema, t.String(), t.Null()])),
+        ),
+      }),
+      profiles: t.Array(
+        t.Object({
+          type: ProfileTypeEnumSchema,
+          profileId: t.String(),
+        }),
       ),
     }),
-    profiles: t.Array(
-      t.Object({
-        type: ProfileTypeEnumSchema,
-        profileId: t.String(),
-      }),
-    ),
-  },
+  ],
   {
     description:
       'Represents a registered user with profile links, authentication strategy, and ownership references to all collection types.',
@@ -863,8 +883,8 @@ export type IUserDataWithoutData = UnwrapSchema<typeof IUserDataWithoutDataSchem
 
 export const IPublicProfileSchema = t.Intersect(
   [
+    IDocumentSchema,
     t.Object({
-      _id: t.String(),
       type: ProfileTypeEnumSchema,
       imageUrl: t.Optional(t.String()),
       description: t.Optional(t.String()),
