@@ -14,6 +14,7 @@ import type {
   IUserDataWithoutData,
   IUserData,
   ITag,
+  IPersonResolved,
 } from './schemas';
 
 const checkProps = (props: string[], obj: unknown) => {
@@ -34,7 +35,7 @@ const checkProps = (props: string[], obj: unknown) => {
  * @param b - The second document to compare.
  * @returns True if the documents are equal and are documents, false otherwise.
  */
-const areDocumentsEqual = (a: string | IDocument | null, b: string | IDocument | null) => {
+export const areDocumentsEqual = (a: string | IDocument | null, b: string | IDocument | null) => {
   if (typeof a === 'string' || typeof b === 'string') return false;
   if (a === null || b === null) return false;
   if (a._id !== b._id) return false;
@@ -45,12 +46,12 @@ const areDocumentsEqual = (a: string | IDocument | null, b: string | IDocument |
  * Checks whether a document received from the backend is still unresolved
  * @type {Boolean}
  */
-const isUnresolved = (obj: unknown): obj is IDocument => {
+export const isUnresolved = (obj: unknown): obj is IDocument => {
   if (typeof obj !== 'object' || obj === null) return false;
   return Object.keys(obj).length === 1 && '_id' in obj;
 };
 
-const isDocument = (obj: unknown): obj is IDocument =>
+export const isDocument = (obj: unknown): obj is IDocument =>
   typeof obj === 'object' && obj !== null && '_id' in obj;
 
 /**
@@ -58,21 +59,21 @@ const isDocument = (obj: unknown): obj is IDocument =>
  * @param obj
  * @returns
  */
-const hasExtensions = (obj: unknown): obj is { extensions: Record<string, unknown> } =>
+export const hasExtensions = (obj: unknown): obj is { extensions: Record<string, unknown> } =>
   checkProps(['extensions'], obj);
 
 /**
  * Checks whether an object is a tag entry
  * @type {Boolean}
  */
-const isTag = (obj: unknown): obj is ITag => checkProps(TAG_PROPS, obj);
+export const isTag = (obj: unknown): obj is ITag => checkProps(TAG_PROPS, obj);
 const TAG_PROPS = ['value'];
 
 /**
  * Checks whether an object is a digital/physical entity
  * @type {Boolean}
  */
-const isMetadataEntity = (obj: unknown): obj is IDigitalEntity | IPhysicalEntity =>
+export const isMetadataEntity = (obj: unknown): obj is IDigitalEntity | IPhysicalEntity =>
   checkProps(META_ENTITY_PROPS, obj);
 const META_ENTITY_PROPS = ['title', 'description', 'persons', 'institutions'];
 
@@ -80,20 +81,20 @@ const META_ENTITY_PROPS = ['title', 'description', 'persons', 'institutions'];
  * Checks whether an object is a compilation
  * @type {Boolean}
  */
-const isCompilation = (obj: unknown): obj is ICompilation => checkProps(COMP_PROPS, obj);
+export const isCompilation = (obj: unknown): obj is ICompilation => checkProps(COMP_PROPS, obj);
 const COMP_PROPS = ['entities', 'name', 'description'];
 
 /**
  * Checks whether an object is an entity
  * @type {Boolean}
  */
-const isEntity = (obj: unknown): obj is IEntity => checkProps(ENTITY_PROPS, obj);
+export const isEntity = (obj: unknown): obj is IEntity => checkProps(ENTITY_PROPS, obj);
 const ENTITY_PROPS = ['name', 'mediaType', 'online', 'finished'];
 
 /**
  *
  */
-const isEntitySettings = (obj: unknown): obj is IEntitySettings =>
+export const isEntitySettings = (obj: unknown): obj is IEntitySettings =>
   checkProps(ENTITY_SETTINGS_PROPS, obj);
 const ENTITY_SETTINGS_PROPS = ['preview', 'cameraPositionInitial', 'background', 'lights'];
 
@@ -101,7 +102,7 @@ const ENTITY_SETTINGS_PROPS = ['preview', 'cameraPositionInitial', 'background',
  * Checks whether an <IEntity | IDocument> is fully resolved
  * @type {Boolean}
  */
-const isResolvedEntity = (
+export const isResolvedEntity = (
   obj: unknown,
 ): obj is IEntity & { relatedDigitalEntity: IDigitalEntity } =>
   isEntity(obj) && isDigitalEntity(obj.relatedDigitalEntity);
@@ -110,69 +111,98 @@ const isResolvedEntity = (
  * Checks whether an object is an annotation
  * @type {Boolean}
  */
-const isAnnotation = (obj: unknown): obj is IAnnotation => checkProps(ANNO_PROPS, obj);
+export const isAnnotation = (obj: unknown): obj is IAnnotation => checkProps(ANNO_PROPS, obj);
 const ANNO_PROPS = ['body', 'target'];
 
 /**
  * Checks whether an object is a digital entity
  * @type {Boolean}
  */
-const isDigitalEntity = (obj: unknown): obj is IDigitalEntity =>
+export const isDigitalEntity = (obj: unknown): obj is IDigitalEntity =>
   isMetadataEntity(obj) && checkProps(DIG_ENTITY_PROPS, obj);
 const DIG_ENTITY_PROPS = ['type', 'licence'];
+
+export const isResolvedDigitalEntity = (obj: unknown): obj is IDigitalEntity => {
+  if (!isDigitalEntity(obj)) return false;
+  return (
+    Object.values(obj.persons).flat().every(isResolvedPerson) &&
+    Object.values(obj.institutions).flat().every(isResolvedInstitution)
+  );
+};
 
 /**
  * Checks whether an object is a physical entity
  * @type {Boolean}
  */
-const isPhysicalEntity = (obj: unknown): obj is IPhysicalEntity =>
+export const isPhysicalEntity = (obj: unknown): obj is IPhysicalEntity =>
   isMetadataEntity(obj) && checkProps(PHY_ENTITY_PROPS, obj);
 const PHY_ENTITY_PROPS = ['place', 'collection'];
+
+export const isResolvedPhysicalEntity = (obj: unknown): obj is IPhysicalEntity => {
+  if (!isPhysicalEntity(obj)) return false;
+  return (
+    Object.values(obj.persons).flat().every(isResolvedPerson) &&
+    Object.values(obj.institutions).flat().every(isResolvedInstitution)
+  );
+};
 
 /**
  * Checks whether an object is a person
  * @type {Boolean}
  */
-const isPerson = (obj: unknown): obj is IPerson => checkProps(PERSON_PROPS, obj);
+export const isPerson = (obj: unknown): obj is IPerson => checkProps(PERSON_PROPS, obj);
 const PERSON_PROPS = ['prename', 'name'];
+
+export const isResolvedPerson = (obj: unknown): obj is IPersonResolved => {
+  if (!isPerson(obj)) return false;
+  return (
+    Object.values(obj.contact_references).every(isContact) &&
+    Object.values(obj.institutions).flat().every(isInstitution)
+  );
+};
 
 /**
  * Checks whether an object is an institution
  * @type {Boolean}
  */
-const isInstitution = (obj: unknown): obj is IInstitution => checkProps(INST_PROPS, obj);
+export const isInstitution = (obj: unknown): obj is IInstitution => checkProps(INST_PROPS, obj);
 const INST_PROPS = ['name', 'addresses'];
+
+export const isResolvedInstitution = (obj: unknown): obj is IInstitution => {
+  if (!isInstitution(obj)) return false;
+  return Object.values(obj.addresses).every(isAddress);
+};
 
 /**
  * Checks whether an object is an address
  * @type {Boolean}
  */
-const isAddress = (obj: unknown): obj is IAddress => checkProps(ADDR_PROPS, obj);
+export const isAddress = (obj: unknown): obj is IAddress => checkProps(ADDR_PROPS, obj);
 const ADDR_PROPS = ['building', 'city', 'country', 'number', 'postcode', 'street'];
 
 /**
  * Checks whether an object is a contact reference
  * @type {Boolean}
  */
-const isContact = (obj: unknown): obj is IContact => checkProps(CONTACT_PROPS, obj);
+export const isContact = (obj: unknown): obj is IContact => checkProps(CONTACT_PROPS, obj);
 const CONTACT_PROPS = ['mail', 'note', 'phonenumber'];
 
 /**
  * Checks whether an object is a user data entry
  * @type {Boolean}
  */
-const isUserData = (obj: unknown): obj is IUserData => checkProps(USER_DATA_PROPS, obj);
+export const isUserData = (obj: unknown): obj is IUserData => checkProps(USER_DATA_PROPS, obj);
 const USER_DATA_PROPS = ['_id', 'username', 'mail', 'role', 'data'];
 
 /**
  * Checks whether an object is a user data entry without the data field
  * @type {Boolean}
  */
-const isUserDataWithoutData = (obj: unknown): obj is IUserDataWithoutData =>
+export const isUserDataWithoutData = (obj: unknown): obj is IUserDataWithoutData =>
   checkProps(USER_DATA_WITHOUT_DATA_PROPS, obj);
 const USER_DATA_WITHOUT_DATA_PROPS = ['_id', 'username', 'mail', 'role'];
 
-const isPublicProfile = (obj: unknown): obj is IPublicProfile => {
+export const isPublicProfile = (obj: unknown): obj is IPublicProfile => {
   if (!obj || obj === null) return false;
   if (typeof obj !== 'object') return false;
   if (Array.isArray(obj)) return false;
@@ -185,28 +215,4 @@ const isPublicProfile = (obj: unknown): obj is IPublicProfile => {
     'socials' in profile &&
     'website' in (profile['socials'] as Record<string, unknown>)
   );
-};
-
-
-export {
-  areDocumentsEqual,
-  hasExtensions,
-  isAddress,
-  isAnnotation,
-  isCompilation,
-  isContact,
-  isDigitalEntity,
-  isDocument,
-  isEntity,
-  isEntitySettings,
-  isInstitution,
-  isMetadataEntity,
-  isPerson,
-  isPhysicalEntity,
-  isResolvedEntity,
-  isTag,
-  isUnresolved,
-  isPublicProfile,
-  isUserData,
-  isUserDataWithoutData,
 };

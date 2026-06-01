@@ -548,7 +548,7 @@ export const IPersonResolvedSchema = t.Intersect(
     t.Omit(IPersonSchema, ['institutions', 'contact_references']),
     t.Object({
       institutions: t.Record(t.String(), t.Array(IInstitutionSchema)),
-      contact_references: t.Record(t.String(), t.Array(IContactSchema)),
+      contact_references: t.Record(t.String(), IContactSchema),
     }),
   ],
   {
