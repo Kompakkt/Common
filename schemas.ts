@@ -137,7 +137,7 @@ export const DataTupleSchema = t.Union(
 );
 export type DataTuple = UnwrapSchema<typeof DataTupleSchema>;
 
-export const IAddressSchema = t.Intersect(
+export const IAddressSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -156,7 +156,7 @@ export const IAddressSchema = t.Intersect(
 );
 export type IAddress = UnwrapSchema<typeof IAddressSchema>;
 
-export const IContactSchema = t.Intersect(
+export const IContactSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -172,7 +172,7 @@ export const IContactSchema = t.Intersect(
 );
 export type IContact = UnwrapSchema<typeof IContactSchema>;
 
-export const ITagSchema = t.Intersect(
+export const ITagSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -185,7 +185,7 @@ export const ITagSchema = t.Intersect(
 );
 export type ITag = UnwrapSchema<typeof ITagSchema>;
 
-export const IStrippedUserDataSchema = t.Intersect(
+export const IStrippedUserDataSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -210,7 +210,7 @@ export const ProfileReferenceSchema = t.Object(
 );
 export type ProfileReference = UnwrapSchema<typeof ProfileReferenceSchema>;
 
-export const AccessFieldEntrySchema = t.Intersect(
+export const AccessFieldEntrySchema = t.Composite(
   [
     IStrippedUserDataSchema,
     t.Object({
@@ -229,7 +229,7 @@ export const AccessFieldSchema = t.Array(AccessFieldEntrySchema, {
 });
 export type AccessField = UnwrapSchema<typeof AccessFieldSchema>;
 
-export const CreatorFieldSchema = t.Intersect(
+export const CreatorFieldSchema = t.Composite(
   [
     IStrippedUserDataSchema,
     t.Object({
@@ -335,7 +335,7 @@ export const IEntitySettingsSchema = t.Object(
 );
 export type IEntitySettings = UnwrapSchema<typeof IEntitySettingsSchema>;
 
-export const IAgentSchema = t.Intersect(
+export const IAgentSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -429,7 +429,7 @@ export const ITargetSchema = t.Object(
 );
 export type ITarget = UnwrapSchema<typeof ITargetSchema>;
 
-export const IAnnotationSchema = t.Intersect(
+export const IAnnotationSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -493,7 +493,7 @@ export const IPlaceTupleSchema = t.Object(
 );
 export type IPlaceTuple = UnwrapSchema<typeof IPlaceTupleSchema>;
 
-export const IInstitutionSchema = t.Intersect(
+export const IInstitutionSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -510,7 +510,7 @@ export const IInstitutionSchema = t.Intersect(
 );
 export type IInstitution = UnwrapSchema<typeof IInstitutionSchema>;
 
-export const IInstitutionResolvedSchema = t.Intersect(
+export const IInstitutionResolvedSchema = t.Composite(
   [
     t.Omit(IInstitutionSchema, ['addresses']),
     t.Object({
@@ -523,7 +523,7 @@ export const IInstitutionResolvedSchema = t.Intersect(
 );
 export type IInstitutionResolved = UnwrapSchema<typeof IInstitutionResolvedSchema>;
 
-export const IPersonSchema = t.Intersect(
+export const IPersonSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -541,7 +541,7 @@ export const IPersonSchema = t.Intersect(
 );
 export type IPerson = UnwrapSchema<typeof IPersonSchema>;
 
-export const IPersonResolvedSchema = t.Intersect(
+export const IPersonResolvedSchema = t.Composite(
   [
     t.Omit(IPersonSchema, ['institutions', 'contact_references']),
     t.Object({
@@ -556,7 +556,7 @@ export const IPersonResolvedSchema = t.Intersect(
 );
 export type IPersonResolved = UnwrapSchema<typeof IPersonResolvedSchema>;
 
-export const IBaseEntitySchema = t.Intersect(
+export const IBaseEntitySchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -579,7 +579,7 @@ export const IBaseEntitySchema = t.Intersect(
 );
 export type IBaseEntity = UnwrapSchema<typeof IBaseEntitySchema>;
 
-export const IBaseEntityResolvedSchema = t.Intersect(
+export const IBaseEntityResolvedSchema = t.Composite(
   [
     t.Omit(IBaseEntitySchema, ['persons', 'institutions']),
     t.Object({
@@ -594,7 +594,7 @@ export const IBaseEntityResolvedSchema = t.Intersect(
 );
 export type IBaseEntityResolved = UnwrapSchema<typeof IBaseEntityResolvedSchema>;
 
-export const IPhysicalEntitySchema = t.Intersect(
+export const IPhysicalEntitySchema = t.Composite(
   [
     IBaseEntitySchema,
     t.Object({
@@ -610,7 +610,7 @@ export const IPhysicalEntitySchema = t.Intersect(
 );
 export type IPhysicalEntity = UnwrapSchema<typeof IPhysicalEntitySchema>;
 
-export const IPhysicalEntityResolvedSchema = t.Intersect(
+export const IPhysicalEntityResolvedSchema = t.Composite(
   [
     t.Omit(IPhysicalEntitySchema, ['persons', 'institutions']),
     t.Pick(IBaseEntityResolvedSchema, ['persons', 'institutions']),
@@ -622,7 +622,7 @@ export const IPhysicalEntityResolvedSchema = t.Intersect(
 );
 export type IPhysicalEntityResolved = UnwrapSchema<typeof IPhysicalEntityResolvedSchema>;
 
-export const IDigitalEntitySchema = t.Intersect(
+export const IDigitalEntitySchema = t.Composite(
   [
     IBaseEntitySchema,
     t.Object({
@@ -645,7 +645,7 @@ export const IDigitalEntitySchema = t.Intersect(
 );
 export type IDigitalEntity = UnwrapSchema<typeof IDigitalEntitySchema>;
 
-export const IDigitalEntityResolvedSchema = t.Intersect(
+export const IDigitalEntityResolvedSchema = t.Composite(
   [
     t.Omit(IDigitalEntitySchema, ['persons', 'institutions', 'tags', 'phyObjs']),
     t.Pick(IBaseEntityResolvedSchema, ['persons', 'institutions']),
@@ -696,7 +696,7 @@ const IEntityPartialFilterableSchema = t.Object({
   __downloadable: t.Optional(t.Boolean()),
 });
 
-export const IEntitySchema = t.Intersect(
+export const IEntitySchema = t.Composite(
   [
     IAnnotationListSchema,
     IEntityPartialSortableSchema,
@@ -738,7 +738,7 @@ export const IEntitySchema = t.Intersect(
 );
 export type IEntity = UnwrapSchema<typeof IEntitySchema>;
 
-export const IEntityResolvedSchema = t.Intersect(
+export const IEntityResolvedSchema = t.Composite(
   [
     t.Omit(IEntitySchema, ['relatedDigitalEntity', 'annotations']),
     t.Object({ relatedDigitalEntity: IDigitalEntityResolvedSchema }),
@@ -751,7 +751,7 @@ export const IEntityResolvedSchema = t.Intersect(
 );
 export type IEntityResolved = UnwrapSchema<typeof IEntityResolvedSchema>;
 
-export const IEntityResolvedOnlyDigitalEntitySchema = t.Intersect(
+export const IEntityResolvedOnlyDigitalEntitySchema = t.Composite(
   [
     t.Omit(IEntitySchema, ['relatedDigitalEntity', 'annotations']),
     t.Object({ relatedDigitalEntity: IDigitalEntitySchema }),
@@ -766,7 +766,7 @@ export type IEntityResolvedOnlyDigitalEntity = UnwrapSchema<
   typeof IEntityResolvedOnlyDigitalEntitySchema
 >;
 
-export const ICompilationSchema = t.Intersect(
+export const ICompilationSchema = t.Composite(
   [
     IAnnotationListSchema,
     IEntityPartialSortableSchema,
@@ -789,7 +789,7 @@ export const ICompilationSchema = t.Intersect(
 );
 export type ICompilation = UnwrapSchema<typeof ICompilationSchema>;
 
-export const ICompilationResolvedSchema = t.Intersect(
+export const ICompilationResolvedSchema = t.Composite(
   [
     t.Omit(ICompilationSchema, ['entities', 'annotations']),
     t.Object({
@@ -804,7 +804,7 @@ export const ICompilationResolvedSchema = t.Intersect(
 );
 export type ICompilationResolved = UnwrapSchema<typeof ICompilationResolvedSchema>;
 
-export const ICompilationResolvedOnlyEntitiesSchema = t.Intersect(
+export const ICompilationResolvedOnlyEntitiesSchema = t.Composite(
   [
     t.Omit(ICompilationSchema, ['entities', 'annotations']),
     t.Object({ entities: t.Record(t.String(), IEntityResolvedOnlyDigitalEntitySchema) }),
@@ -839,7 +839,7 @@ const userDataFieldShape = Object.fromEntries(
   ]),
 );
 
-export const IUserDataSchema = t.Intersect(
+export const IUserDataSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
@@ -872,7 +872,7 @@ export const IUserDataWithoutDataSchema = t.Omit(IUserDataSchema, ['data'], {
 });
 export type IUserDataWithoutData = UnwrapSchema<typeof IUserDataWithoutDataSchema>;
 
-export const IPublicProfileSchema = t.Intersect(
+export const IPublicProfileSchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
