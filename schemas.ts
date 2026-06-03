@@ -877,7 +877,7 @@ export const IPublicProfileSchema = t.Intersect(
     IDocumentSchema,
     t.Object({
       type: ProfileTypeEnumSchema,
-      imageUrl: t.Optional(t.String()),
+      imageUrl: t.Optional(t.Nullable(t.String())),
       description: t.Optional(t.String()),
       displayName: t.Optional(t.String()),
       location: t.Optional(t.String()),
