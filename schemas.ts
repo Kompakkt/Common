@@ -808,7 +808,7 @@ export type ICompilationResolved = UnwrapSchema<typeof ICompilationResolvedSchem
 export const ICompilationResolvedOnlyEntitiesSchema = t.Composite(
   [
     t.Omit(ICompilationSchema, ['entities', 'annotations']),
-    t.Object({ entities: t.Record(t.String(), IEntityResolvedOnlyDigitalEntitySchema) }),
+    t.Object({ entities: t.Record(t.String(), IEntitySchema) }),
     IAnnotationListResolvedSchema,
   ],
   {
