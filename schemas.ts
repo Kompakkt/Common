@@ -629,6 +629,8 @@ export const IDigitalEntitySchema = t.Composite(
     t.Object({
       type: t.String(),
       licence: t.String(),
+      // TODO: Migration to make licenceAttribution a required field, with empty string for old records that lack it
+      licenceAttribution: t.Optional(t.Nullable(t.String())),
       discipline: t.Array(t.String()),
       tags: t.Array(t.Union([IDocumentSchema, ITagSchema])),
       dimensions: t.Array(IDimensionTupleSchema),
