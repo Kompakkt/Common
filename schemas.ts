@@ -879,12 +879,12 @@ export const IPublicProfileSchema = t.Composite(
     t.Object({
       type: ProfileTypeEnumSchema,
       imageUrl: t.Optional(t.Nullable(t.String())),
-      description: t.Optional(t.String()),
+      description: t.Optional(t.Nullable(t.String())),
       displayName: t.Optional(t.String()),
-      location: t.Optional(t.String()),
+      location: t.Optional(t.Nullable(t.String())),
       socials: t.Object(
         {
-          website: t.Optional(t.String()),
+          website: t.Optional(t.Nullable(t.String())),
         },
         { additionalProperties: t.Optional(t.String()) },
       ),
