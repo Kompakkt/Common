@@ -78,6 +78,10 @@ export const IFilterableSchema = t.Object({
 });
 export type IFilterable = UnwrapSchema<typeof IFilterableSchema>;
 
+// Unknown will force plugin authors to explicitly define the shape of their extension data
+export const IExtensionSchema = t.Optional(t.Record(t.String(), t.Unknown()));
+export type IExtension = UnwrapSchema<typeof IExtensionSchema>;
+
 export const ITypeValueTupleSchema = t.Object(
   {
     type: t.String(),
@@ -448,7 +452,7 @@ export const IAnnotationSchema = t.Composite(
       positionYOnView: t.Optional(t.Number()),
       body: IBodySchema,
       target: ITargetSchema,
-      extensions: t.Optional(t.Record(t.String(), t.Any())),
+      extensions: IExtensionSchema,
     }),
   ],
   {
@@ -570,7 +574,7 @@ export const IBaseEntitySchema = t.Composite(
       persons: t.Array(t.Union([IDocumentSchema, t.String(), IPersonSchema])),
       institutions: t.Array(t.Union([IInstitutionSchema, IDocumentSchema, t.String()])),
       metadata_files: t.Array(IFileSchema),
-      extensions: t.Optional(t.Record(t.String(), t.Any())),
+      extensions: IExtensionSchema,
     }),
   ],
   {
@@ -725,7 +729,7 @@ export const IEntitySchema = t.Composite(
         raw: t.String(),
       }),
       settings: IEntitySettingsSchema,
-      extensions: t.Optional(t.Record(t.String(), t.Any())),
+      extensions: IExtensionSchema,
       access: AccessFieldSchema,
       options: t.Optional(
         t.Object({
