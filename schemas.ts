@@ -32,10 +32,9 @@ export const ProfileTypeEnumSchema = t.UnionEnum(['user', 'organization'], {
   description: 'Defines the type of a profile, which can be either "user" or "organization".',
 });
 
-const IdSchema = t
-  .Transform(t.String())
-  .Decode(v => v?.toString?.() ?? v)
-  .Encode(v => v?.toString?.() ?? v);
+const IdSchema = t.Any({
+  description: 'Unique identifier provided by MongoDB',
+});
 
 export const IDocumentSchema = t.Object(
   { _id: IdSchema },
