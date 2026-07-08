@@ -48,7 +48,7 @@ export const areDocumentsEqual = (a: string | IDocument | null, b: string | IDoc
  */
 export const isUnresolved = (obj: unknown): obj is IDocument => {
   if (typeof obj !== 'object' || obj === null) return false;
-  return Object.keys(obj).length === 1 && '_id' in obj && typeof obj._id === 'string';
+  return Object.keys(obj).length === 1 && '_id' in obj;
 };
 
 export const isDocument = (obj: unknown): obj is IDocument =>
