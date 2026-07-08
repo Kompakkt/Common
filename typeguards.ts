@@ -48,11 +48,11 @@ export const areDocumentsEqual = (a: string | IDocument | null, b: string | IDoc
  */
 export const isUnresolved = (obj: unknown): obj is IDocument => {
   if (typeof obj !== 'object' || obj === null) return false;
-  return Object.keys(obj).length === 1 && '_id' in obj;
+  return Object.keys(obj).length === 1 && '_id' in obj && typeof obj._id === 'string';
 };
 
 export const isDocument = (obj: unknown): obj is IDocument =>
-  typeof obj === 'object' && obj !== null && '_id' in obj;
+  typeof obj === 'object' && obj !== null && '_id' in obj && typeof obj._id === 'string';
 
 /**
  * Checks whether an object has extensions
