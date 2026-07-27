@@ -302,10 +302,21 @@ export const IEntityLightSchema = t.Object(
     type: t.String(),
     position: IVector3Schema,
     intensity: t.Number(),
+    rotation: t.Optional(IVector3Schema),
+    color: t.Optional(IColorSchema),
+    name: t.Optional(t.String()),
+
+    // SpotLight-specific
+    angle: t.Optional(t.Number()),
+    exponent: t.Optional(t.Number()),
+
+    // RectAreaLight-specific
+    width: t.Optional(t.Number()),
+    height: t.Optional(t.Number()),
   },
   {
     description:
-      'Light configuration for entity rendering, specifying type, placement, and brightness.',
+      'Light configuration for entity rendering, specifying type, placement, rotation, color, brightness, and type-specific parameters.',
   },
 );
 export type IEntityLight = UnwrapSchema<typeof IEntityLightSchema>;
