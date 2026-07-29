@@ -934,7 +934,7 @@ export const INewsItemSchema = t.Composite(
       author: t.String(),
       createdBy: t.String(),
       published: t.Boolean(),
-      date: t.Date(),
+      date: t.String({ description: 'ISO 8601 date string' }),
     }),
   ],
   {
