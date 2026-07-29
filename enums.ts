@@ -43,6 +43,15 @@ export type ProfileType = (typeof ProfileType)[keyof typeof ProfileType];
 export const isProfileType = (value: unknown): value is ProfileType =>
   typeof value === 'string' && (Object.values(ProfileType) as string[]).includes(value);
 
+export const UserFlag = {
+  canModifyNews: 'canModifyNews',
+} as const;
+
+export type UserFlag = (typeof UserFlag)[keyof typeof UserFlag];
+
+export const isUserFlag = (value: unknown): value is UserFlag =>
+  typeof value === 'string' && (Object.values(UserFlag) as string[]).includes(value);
+
 export const UserRank = {
   uploader: 'uploader',
   admin: 'admin',

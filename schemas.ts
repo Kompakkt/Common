@@ -6,6 +6,10 @@ import { t, type UnwrapSchema } from 'elysia';
 export const UserRankEnumSchema = t.UnionEnum(['uploader', 'admin'], {
   description: 'Defines the rank of a user, which can be either "uploader" or "admin".',
 });
+export const UserFlagEnumSchema = t.UnionEnum(['canModifyNews'], {
+  description:
+    'Defines permission flags for a user. Currently supports "canModifyNews" for managing news items.',
+});
 export const CollectionEnumSchema = t.UnionEnum(
   [
     'address',
@@ -862,6 +866,7 @@ export const IUserDataSchema = t.Composite(
       surname: t.String(),
       mail: t.String(),
       role: UserRankEnumSchema,
+      flags: t.Optional(t.Array(UserFlagEnumSchema)),
       strategy: t.String(),
       sessionID: t.Optional(t.String()),
       data: t.Object(userDataFieldShape),
@@ -917,3 +922,23 @@ export const IPublicProfileSchema = t.Composite(
   },
 );
 export type IPublicProfile = UnwrapSchema<typeof IPublicProfileSchema>;
+
+export const INewsItemSchema = t.Composite(
+  [
+    IDocumentSchema,
+    t.Object({
+      title: t.String({ maxLength: 120 }),
+      content: t.String({ maxLength: 240 }),
+      link: t.Optional(t.String()),
+      imageUrl: t.Optional(t.String()),
+      author: t.String(),
+      createdBy: t.String(),
+      published: t.Boolean(),
+      date: t.Date(),
+    }),
+  ],
+  {
+    description: 'A news item displayed on the Kompakkt home page.',
+  },
+);
+export type INewsItem = UnwrapSchema<typeof INewsItemSchema>;
