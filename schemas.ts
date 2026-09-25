@@ -35,6 +35,10 @@ export const EntityAccessRoleEnumSchema = t.UnionEnum(['owner', 'editor', 'viewe
 export const ProfileTypeEnumSchema = t.UnionEnum(['user', 'organization'], {
   description: 'Defines the type of a profile, which can be either "user" or "organization".',
 });
+export const ProfileMemberRoleEnumSchema = t.UnionEnum(['owner', 'editor', 'viewer'], {
+  description:
+    'Defines the membership role of a user within an organizational profile, which can be "owner", "editor", or "viewer". The role is the baseline for content owned by the organization, unless an explicit per-document access entry applies.',
+});
 
 export const IDocumentSchema = t.Object(
   { _id: t.Any() },
@@ -213,6 +217,21 @@ export const ProfileReferenceSchema = t.Object(
   },
 );
 export type ProfileReference = UnwrapSchema<typeof ProfileReferenceSchema>;
+
+export const IProfileMemberSchema = t.Object(
+  {
+    userId: t.String({ description: 'The IUserData._id of the member.' }),
+    role: ProfileMemberRoleEnumSchema,
+    addedAt: t.Optional(
+      t.String({ description: 'ISO 8601 timestamp at which the member was added.' }),
+    ),
+  },
+  {
+    description:
+      'Member of an organizational profile with their per-profile role. The role acts as a baseline for organization-owned content when the user has no explicit access entry.',
+  },
+);
+export type IProfileMember = UnwrapSchema<typeof IProfileMemberSchema>;
 
 export const AccessFieldEntrySchema = t.Composite(
   [
@@ -874,6 +893,7 @@ export const IUserDataSchema = t.Composite(
         t.Object({
           type: ProfileTypeEnumSchema,
           profileId: t.String(),
+          role: t.Optional(ProfileMemberRoleEnumSchema),
         }),
       ),
     }),
@@ -904,6 +924,18 @@ export const IPublicProfileSchema = t.Composite(
           website: t.Optional(t.Nullable(t.String())),
         },
         { additionalProperties: t.Optional(t.String()) },
+      ),
+      members: t.Optional(
+        t.Array(IProfileMemberSchema, {
+          description:
+            'Members of this profile with their per-profile role. Only meaningful for organization profiles.',
+        }),
+      ),
+      ownerId: t.Optional(
+        t.String({
+          description:
+            'IUserData._id of the bootstrap owner. Cannot be removed via the members API.',
+        }),
       ),
     }),
     t.Object({

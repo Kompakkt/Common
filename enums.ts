@@ -33,6 +33,17 @@ export type EntityAccessRole = (typeof EntityAccessRole)[keyof typeof EntityAcce
 export const isEntityAccessRole = (value: unknown): value is EntityAccessRole =>
   typeof value === 'string' && (Object.values(EntityAccessRole) as string[]).includes(value);
 
+export const ProfileMemberRole = {
+  owner: 'owner',
+  editor: 'editor',
+  viewer: 'viewer',
+} as const;
+
+export type ProfileMemberRole = (typeof ProfileMemberRole)[keyof typeof ProfileMemberRole];
+
+export const isProfileMemberRole = (value: unknown): value is ProfileMemberRole =>
+  typeof value === 'string' && (Object.values(ProfileMemberRole) as string[]).includes(value);
+
 export const ProfileType = {
   user: 'user',
   organization: 'organization',
