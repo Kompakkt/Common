@@ -57,6 +57,7 @@ export const ISortableSchema = t.Object({
   __createdAt: t.Number({
     description: 'Creation timestamp of the item, used for sorting by creation date.',
   }),
+  __updatedAt: t.Optional(t.Number()),
   __annotationCount: t.Number({
     description:
       'Number of annotations associated with the item, used for sorting by annotation count.',
@@ -477,6 +478,7 @@ export const IAnnotationSchema = t.Composite(
       motivation: t.String(),
       lastModificationDate: t.Optional(t.String()),
       lastModifiedBy: IAgentSchema,
+      __updatedAt: t.Optional(t.Number()),
       positionXOnView: t.Optional(t.Number()),
       positionYOnView: t.Optional(t.Number()),
       body: IBodySchema,
@@ -594,6 +596,7 @@ export const IBaseEntitySchema = t.Composite(
   [
     IDocumentSchema,
     t.Object({
+      __updatedAt: t.Optional(t.Number()),
       title: t.String(),
       description: t.String(),
       externalId: t.Array(ITypeValueTupleSchema),
@@ -722,6 +725,7 @@ export type IAnnotationListResolved = UnwrapSchema<typeof IAnnotationListResolve
 const IEntityPartialSortableSchema = t.Object({
   __hits: t.Optional(t.Number()),
   __createdAt: t.Optional(t.Number()),
+  __updatedAt: t.Optional(t.Number()),
   __annotationCount: t.Optional(t.Number()),
   __normalizedName: t.Optional(t.String()),
 });
