@@ -56,6 +56,7 @@ export const isProfileType = (value: unknown): value is ProfileType =>
 
 export const UserFlag = {
   canModifyNews: 'canModifyNews',
+  testingCanManageOrganizations: 'testingCanManageOrganizations',
 } as const;
 
 export type UserFlag = (typeof UserFlag)[keyof typeof UserFlag];

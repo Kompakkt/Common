@@ -6,10 +6,13 @@ import { t, type UnwrapSchema } from 'elysia';
 export const UserRankEnumSchema = t.UnionEnum(['uploader', 'admin'], {
   description: 'Defines the rank of a user, which can be either "uploader" or "admin".',
 });
-export const UserFlagEnumSchema = t.UnionEnum(['canModifyNews'], {
-  description:
-    'Defines permission flags for a user. Currently supports "canModifyNews" for managing news items.',
-});
+export const UserFlagEnumSchema = t.UnionEnum(
+  ['canModifyNews', 'testingCanManageOrganizations'],
+  {
+    description:
+      'Defines permission flags for a user. Currently supports "canModifyNews" for managing news items and "testingCanManageOrganizations" for testing organizational profiles.',
+  },
+);
 export const CollectionEnumSchema = t.UnionEnum(
   [
     'address',
