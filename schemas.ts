@@ -357,8 +357,14 @@ export const IEntitySettingsSchema = t.Object(
     background: t.Object({
       color: IColorSchema,
       effect: t.Boolean(),
-      skybox: t.Optional(t.String()),
     }),
+    skybox: t.Optional(
+      t.Object({
+        preset: t.Optional(t.String()),
+        url: t.Optional(t.String()),
+        microSurface: t.Number(),
+      }),
+    ),
     lights: t.Array(IEntityLightSchema),
     rotation: IVector3Schema,
     scale: IVector3Schema,
